@@ -6,7 +6,7 @@ export function Header() {
           The <span className="text-[#d32f2f]">Cost of Inaction</span> Calculator
         </h1>
         <p className="text-[13px] text-[#90a4ae]">
-          What aging AV infrastructure is really costing your institution
+          See what aging AV infrastructure is really costing — plug in your numbers
         </p>
       </div>
       <div className="text-[13px] text-[#7ab800] font-semibold">epiphan video</div>
