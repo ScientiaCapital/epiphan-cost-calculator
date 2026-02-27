@@ -29,7 +29,7 @@ export function Methodology() {
       Dartmouth OpenAV ($1.6M savings across 140 classrooms) &bull;{" "}
       Reference deployments: NC State (300+), UNLV (215), MTSU (428), NTNU (700 rooms).
       Figures represent conservative estimates — actual exposure may be higher.
-      {date && <> Generated {date} for Epiphan Video BDR use.</>}
+      {date && <> Generated {date}.</>}
     </div>
   );
 }

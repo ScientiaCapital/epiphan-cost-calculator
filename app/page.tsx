@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { calculate, type CalculatorInputs } from "@/lib/calculator";
 import { DEFAULT_INPUTS } from "@/lib/constants";
+import { parseInputsFromParams } from "@/lib/parse-params";
 import { Header } from "@/components/header";
 import { ScenarioBar } from "@/components/scenario-bar";
 import { InputPanel } from "@/components/input-panel";
@@ -10,11 +11,18 @@ import { CostSummary } from "@/components/cost-summary";
 import { MetricsRow } from "@/components/metrics-row";
 import { CostBreakdown } from "@/components/cost-breakdown";
 import { SolutionRow } from "@/components/solution-row";
-import { TalkingPoints } from "@/components/talking-points";
+import { ShareButton } from "@/components/share-button";
 import { Methodology } from "@/components/methodology";
 
 export default function Home() {
   const [inputs, setInputs] = useState<CalculatorInputs>(DEFAULT_INPUTS);
+
+  // Load inputs from URL params on first render (for shared links)
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search) {
+      setInputs(parseInputsFromParams(window.location.search));
+    }
+  }, []);
 
   const results = useMemo(() => calculate(inputs), [inputs]);
 
@@ -44,7 +52,7 @@ export default function Home() {
             />
             <CostBreakdown inputs={inputs} results={results} />
             <SolutionRow inputs={inputs} results={results} />
-            <TalkingPoints inputs={inputs} results={results} />
+            <ShareButton inputs={inputs} />
             <Methodology />
           </div>
         </div>
