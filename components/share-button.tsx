@@ -31,9 +31,13 @@ export function ShareButton({ inputs }: ShareButtonProps) {
 
   async function handleCopy() {
     const url = buildShareUrl(inputs);
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy this link:", url);
+    }
   }
 
   return (

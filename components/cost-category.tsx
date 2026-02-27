@@ -49,11 +49,9 @@ export function CostCategory({ name, cost, barColor, maxCost, children }: CostCa
         />
       </div>
 
-      {open && (
-        <div className="mt-2.5 text-[12px] text-[#757575] leading-relaxed">
-          {children}
-        </div>
-      )}
+      <div className={`mt-2.5 text-[12px] text-[#757575] leading-relaxed ${open ? "" : "hidden print:block"}`}>
+        {children}
+      </div>
     </div>
   );
 }
