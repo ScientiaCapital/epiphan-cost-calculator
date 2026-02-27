@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost of Inaction Calculator — Epiphan Video</title>
+<style>
+  :root {
+    --green: #7ab800;
+    --green-dark: #5a8a00;
+    --navy: #1a2332;
+    --red: #d32f2f;
+    --red-light: #ffebee;
+    --amber: #f57c00;
+    --amber-light: #fff3e0;
+    --blue: #1565c0;
+    --blue-light: #e3f2fd;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #eeeeee;
+    --gray-300: #e0e0e0;
+    --gray-600: #757575;
+    --gray-800: #424242;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .header {
+    background: var(--navy);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header h1 span { color: var(--red); }
+  .header .sub { font-size: 13px; color: #90a4ae; }
+  .header .brand { font-size: 13px; color: var(--green); font-weight: 600; }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body { padding: 20px; }
+
+  /* Input Panel */
+  .input-panel { position: sticky; top: 24px; }
+  .input-panel .card-header { background: var(--navy); color: white; }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .field .hint { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
+
+  .divider { border-top: 1px solid var(--gray-200); margin: 16px 0; }
+
+  /* Big Number */
+  .big-cost {
+    text-align: center;
+    padding: 20px;
+    background: var(--red-light);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 2px solid var(--red);
+  }
+  .big-cost .label { font-size: 12px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 1px; }
+  .big-cost .number { font-size: 42px; font-weight: 800; color: var(--red); line-height: 1.1; margin: 4px 0; }
+  .big-cost .per-year { font-size: 13px; color: var(--gray-600); }
+
+  .three-year-box {
+    text-align: center;
+    padding: 14px;
+    background: #fce4ec;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .three-year-box .label { font-size: 11px; font-weight: 700; color: #c62828; text-transform: uppercase; letter-spacing: 0.5px; }
+  .three-year-box .number { font-size: 28px; font-weight: 800; color: #c62828; }
+
+  /* Cost Category Row */
+  .cost-cat {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cost-cat:hover { background: var(--gray-50); }
+  .cost-cat:last-child { border-bottom: none; }
+
+  .cost-cat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .cost-cat-name {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cost-cat-value {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--red);
+    white-space: nowrap;
+  }
+
+  .cost-bar-wrap {
+    margin-top: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .cost-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .bar-red { background: var(--red); }
+  .bar-amber { background: var(--amber); }
+  .bar-blue { background: var(--blue); }
+
+  .cost-detail {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    display: none;
+  }
+  .cost-detail.open { display: block; }
+  .cost-detail strong { color: var(--gray-800); }
+
+  /* Epiphan Solution Row */
+  .solution-row {
+    background: #e8f5e9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .solution-row h3 { font-size: 16px; font-weight: 700; color: var(--green-dark); margin-bottom: 12px; }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .solution-card {
+    background: white;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .solution-card .num { font-size: 24px; font-weight: 800; color: var(--green-dark); }
+  .solution-card .lbl { font-size: 11px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+
+  /* Talking Points */
+  .talking-points { margin-top: 20px; }
+  .talking-points h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); margin-bottom: 12px; }
+  .tp-card {
+    background: white;
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .tp-card .role { font-size: 11px; font-weight: 700; color: var(--green-dark); text-transform: uppercase; letter-spacing: 0.3px; }
+  .tp-card .msg { font-size: 13px; margin-top: 4px; color: var(--gray-800); }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .input-panel { position: static; }
+    .grid-2 { grid-template-columns: 280px 1fr; }
+    .cost-detail { display: block !important; }
+    .header { padding: 16px 20px; }
+    .container { padding: 12px; }
+  }
+
+  /* Toggle arrow */
+  .toggle-arrow {
+    font-size: 10px;
+    color: var(--gray-600);
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .toggle-arrow.open { transform: rotate(90deg); }
+
+  /* Scenario Selector */
+  .scenario-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .scenario-btn {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 2px solid var(--gray-300);
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .scenario-btn:hover { border-color: var(--green); }
+  .scenario-btn.active { border-color: var(--green); background: #f1f8e9; color: var(--green-dark); }
+  .scenario-btn .rooms-label { font-size: 13px; display: block; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>The <span>Cost of Inaction</span> Calculator</h1>
+    <div class="sub">What aging AV infrastructure is really costing your institution</div>
+  </div>
+  <div class="brand">epiphan video</div>
+</div>
+
+<div class="container">
+
+<!-- Quick Scenario -->
+<div class="scenario-bar">
+  <button class="scenario-btn" onclick="loadScenario(50)">Small<span class="rooms-label">50 rooms</span></button>
+  <button class="scenario-btn" onclick="loadScenario(150)">Mid-Size<span class="rooms-label">150 rooms</span></button>
+  <button class="scenario-btn active" onclick="loadScenario(300)">Large<span class="rooms-label">300 rooms</span></button>
+  <button class="scenario-btn" onclick="loadScenario(600)">Major<span class="rooms-label">600 rooms</span></button>
+</div>
+
+<div class="grid-2">
+
+  <!-- LEFT: Inputs -->
+  <div class="input-panel">
+    <div class="card">
+      <div class="card-header">&#9881; Institution Profile</div>
+      <div class="card-body">
+        <div class="field">
+          <label>Institution Name</label>
+          <input type="text" id="instName" placeholder="e.g. Georgia Tech" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label>AV-Equipped Rooms</label>
+          <input type="number" id="rooms" value="300" min="1" max="5000" oninput="recalc()">
+          <div class="hint">Classrooms, lecture halls, labs, studios</div>
+        </div>
+        <div class="field">
+          <label>Average Equipment Age (years)</label>
+          <select id="eqAge" onchange="recalc()">
+            <option value="3">3 years (approaching refresh)</option>
+            <option value="5" selected>5 years (standard cycle end)</option>
+            <option value="7">7 years (overdue)</option>
+            <option value="10">10+ years (critical)</option>
+          </select>
+        </div>
+        <div class="divider"></div>
+        <div class="field">
+          <label>Lectures per Room / Week</label>
+          <input type="number" id="lecturesPerWeek" value="15" min="1" max="50" oninput="recalc()">
+          <div class="hint">Avg scheduled recordings/streams</div>
+        </div>
+        <div class="field">
+          <label>Teaching Weeks / Year</label>
+          <input type="number" id="teachWeeks" value="30" min="20" max="52" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label>Students per Institution</label>
+          <input type="number" id="students" value="20000" min="500" max="100000" step="500" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label>Avg Annual Tuition ($)</label>
+          <input type="number" id="tuition" value="15000" min="1000" max="80000" step="500" oninput="recalc()">
+        </div>
+        <div class="divider"></div>
+        <div class="field">
+          <label>IT Staff Salary (avg)</label>
+          <input type="number" id="itSalary" value="90000" min="40000" max="200000" step="5000" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label>Current AV Technicians (FTEs)</label>
+          <input type="number" id="currentFTE" value="8" min="1" max="50" oninput="recalc()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Results -->
+  <div>
+    <!-- Annual Cost -->
+    <div class="big-cost">
+      <div class="label">Annual Cost of Inaction</div>
+      <div class="number" id="totalAnnual">$0</div>
+      <div class="per-year">per year — money you're already spending</div>
+    </div>
+
+    <div class="three-year-box">
+      <div class="label">3-Year Cumulative Exposure</div>
+      <div class="number" id="totalThreeYear">$0</div>
+    </div>
+
+    <!-- Cost Breakdown -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-header">&#128200; Cost Breakdown</div>
+      <div>
+
+        <!-- 1. Support Tickets -->
+        <div class="cost-cat" onclick="toggleDetail('d1')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a1">&#9654;</span> Support Ticket Overload</div>
+            <div class="cost-cat-value" id="v1">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b1" style="width:0%"></div></div>
+          <div class="cost-detail" id="d1">
+            Aging equipment generates <strong id="ticketsPerRoom">12</strong> extra tickets/room/year vs. modern systems at <strong>$22–$104/ticket</strong> depending on escalation tier.
+            That's <strong id="totalTickets">0</strong> additional tickets your team is fielding annually — each one pulling a technician away from strategic projects.
+            <br><em>Source: MetricNet Service Desk benchmarks, HDI Industry data</em>
+          </div>
+        </div>
+
+        <!-- 2. Missed Captures -->
+        <div class="cost-cat" onclick="toggleDetail('d2')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a2">&#9654;</span> Failed / Missed Captures</div>
+            <div class="cost-cat-value" id="v2">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b2" style="width:0%"></div></div>
+          <div class="cost-detail" id="d2">
+            Aging capture systems have a <strong id="failRate">0%</strong> failure rate.
+            Of <strong id="totalLectures">0</strong> scheduled captures/year, roughly <strong id="missedLectures">0</strong> fail or produce unusable recordings.
+            Each missed capture affects <strong>30–200 students</strong> who lose access to review material, with direct impact on accessibility compliance and student complaints.
+            <br><em>Cost estimated at $150–$400/incident (rescheduling, re-recording, student support, complaint handling)</em>
+          </div>
+        </div>
+
+        <!-- 3. Classroom Downtime -->
+        <div class="cost-cat" onclick="toggleDetail('d3')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a3">&#9654;</span> Classroom Downtime</div>
+            <div class="cost-cat-value" id="v3">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-amber" id="b3" style="width:0%"></div></div>
+          <div class="cost-detail" id="d3">
+            Each AV failure that disrupts a class session costs approximately <strong>$2,000</strong> (instructor time + student time + rescheduling).
+            Aging rooms average <strong id="downtimeEvents">0</strong> disruptive failures/year vs. &lt;0.5 for modern cloud-managed systems.
+            That's <strong id="totalDowntimeHours">0</strong> disrupted class sessions across your campus annually.
+            <br><em>Source: eCampus News / Cenero Downtime Calculator methodology</em>
+          </div>
+        </div>
+
+        <!-- 4. Excess Staff Burden -->
+        <div class="cost-cat" onclick="toggleDetail('d4')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a4">&#9654;</span> Excess Staff / Labor Burden</div>
+            <div class="cost-cat-value" id="v4">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-amber" id="b4" style="width:0%"></div></div>
+          <div class="cost-detail" id="d4">
+            Cloud-managed AV systems reduce support FTE requirements by <strong>40–50%</strong>.
+            Your current <strong id="curFTE">0</strong> AV technicians could be reduced to <strong id="optFTE">0</strong> with modern infrastructure — freeing <strong id="savedFTE">0</strong> FTEs for strategic projects or saving <strong id="fteSavings">$0</strong>/year.
+            <br><em>Source: Collegis Education, OculusIT managed services benchmarks</em>
+          </div>
+        </div>
+
+        <!-- 5. Maintenance Escalation -->
+        <div class="cost-cat" onclick="toggleDetail('d5')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a5">&#9654;</span> Maintenance & Emergency Repairs</div>
+            <div class="cost-cat-value" id="v5">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-blue" id="b5" style="width:0%"></div></div>
+          <div class="cost-detail" id="d5">
+            Maintenance contracts escalate <strong>3–5% annually</strong> as equipment ages.
+            Emergency repairs cost <strong>3–5x</strong> more than preventive maintenance.
+            Parts for discontinued equipment (Extron SMP, older Matrox) become scarce and expensive, with lead times stretching to weeks.
+            <br><em>Source: REMI Group equipment lifecycle analysis</em>
+          </div>
+        </div>
+
+        <!-- 6. ADA Compliance Risk -->
+        <div class="cost-cat" onclick="toggleDetail('d6')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a6">&#9654;</span> ADA / Accessibility Compliance Risk</div>
+            <div class="cost-cat-value" id="v6">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b6" style="width:0%"></div></div>
+          <div class="cost-detail" id="d6">
+            <strong>April 2026 deadline</strong>: Public entities (50K+ pop) must meet WCAG 2.1 Level AA for all digital content — including lecture recordings.
+            <strong>97% of U.S. colleges</strong> currently have accessibility gaps.
+            Average settlement: <strong>$27K per case</strong>, with legal defense adding $15K–$50K per complaint.
+            Without automated, reliable capture feeding into accessible CMS platforms, every missed or poor-quality recording is a compliance liability.
+            <br><em>Source: AGB Policy Alert, 3Play Media, AudioEye compliance database</em>
+          </div>
+        </div>
+
+        <!-- 7. Retention Risk -->
+        <div class="cost-cat" onclick="toggleDetail('d7')">
+          <div class="cost-cat-top">
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a7">&#9654;</span> Student Retention Impact</div>
+            <div class="cost-cat-value" id="v7">$0</div>
+          </div>
+          <div class="cost-bar-wrap"><div class="cost-bar bar-blue" id="b7" style="width:0%"></div></div>
+          <div class="cost-detail" id="d7">
+            Poor classroom technology is cited by <strong>70% of in-person</strong> and <strong>79% of online</strong> students as impacting their learning.
+            Research shows lecture capture access reduces attrition from <strong>12.3% to 5%</strong>.
+            Even a conservative <strong id="retPct">0.5%</strong> retention improvement on <strong id="retStudents">0</strong> students at $<strong id="retTuition">0</strong> avg tuition = significant revenue recovery.
+            <br><em>Source: Collegis Education, Springer Higher Education research</em>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Epiphan Solution -->
+    <div class="solution-row">
+      <h3>&#9989; What Epiphan Solves</h3>
+      <div class="solution-grid">
+        <div class="solution-card">
+          <div class="num" id="solRooms">0</div>
+          <div class="lbl">Rooms modernized with Pearl Nexus + EC20</div>
+        </div>
+        <div class="solution-card">
+          <div class="num" id="solInvest">$0</div>
+          <div class="lbl">Investment (Essentials Bundle)</div>
+        </div>
+        <div class="solution-card">
+          <div class="num" id="solPayback">0</div>
+          <div class="lbl">Month payback period</div>
+        </div>
+        <div class="solution-card">
+          <div class="num" id="solROI">0%</div>
+          <div class="lbl">3-Year ROI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Talking Points -->
+    <div class="talking-points">
+      <h3>&#128172; Discovery Call Talking Points</h3>
+      <div class="tp-card">
+        <div class="role">For the CIO / VP of IT</div>
+        <div class="msg" id="tpCIO">"Your team is spending an estimated $X/year just keeping aging AV alive — that's X FTEs worth of reactive support that could be redeployed to strategic initiatives."</div>
+      </div>
+      <div class="tp-card">
+        <div class="role">For the Provost / Academic Affairs</div>
+        <div class="msg" id="tpProvost">"With X failed captures per year across X rooms, students are losing access to learning materials — and each incident is a potential ADA complaint with the April 2026 deadline approaching."</div>
+      </div>
+      <div class="tp-card">
+        <div class="role">For the CFO / Budget Office</div>
+        <div class="msg" id="tpCFO">"The 3-year cost of maintaining your current infrastructure is $X. Modernizing with Epiphan at $X pays for itself in X months through reduced support costs and avoided compliance exposure."</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 12px 16px; background: var(--gray-100); border-radius: 8px; font-size: 11px; color: var(--gray-600);">
+      <strong>Methodology:</strong> Calculations use industry benchmarks from MetricNet, HDI, eCampus News, Collegis Education, and ADA compliance data. Actual costs vary by institution. Figures represent conservative estimates — real exposure may be higher. Generated <span id="genDate"></span> for Epiphan Video BDR use.
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// Age multipliers — how much worse things get as equipment ages
+const ageMultipliers = { '3': 0.5, '5': 1.0, '7': 1.6, '10': 2.5 };
+const failRates =      { '3': 0.03, '5': 0.06, '7': 0.10, '10': 0.18 };
+const downtimePerRoom = { '3': 1.0, '5': 2.5, '7': 4.0, '10': 6.0 };
+const ticketsExtra =    { '3': 4, '5': 10, '7': 18, '10': 30 };
+
+function $(id) { return document.getElementById(id); }
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function recalc() {
+  const rooms = parseInt($('rooms').value) || 300;
+  const age = $('eqAge').value;
+  const lectPerWk = parseInt($('lecturesPerWeek').value) || 15;
+  const weeks = parseInt($('teachWeeks').value) || 30;
+  const students = parseInt($('students').value) || 20000;
+  const tuition = parseInt($('tuition').value) || 15000;
+  const salary = parseInt($('itSalary').value) || 90000;
+  const curFTE = parseInt($('currentFTE').value) || 8;
+
+  const mult = ageMultipliers[age];
+  const totalLectures = rooms * lectPerWk * weeks;
+
+  // 1. Support Tickets
+  const extraTickets = ticketsExtra[age];
+  const totalExtraTickets = rooms * extraTickets;
+  const avgTicketCost = 35; // blended tier 1-3
+  const ticketCost = totalExtraTickets * avgTicketCost;
+
+  // 2. Missed Captures
+  const failRate = failRates[age];
+  const missed = Math.round(totalLectures * failRate);
+  const costPerMissed = 250;
+  const missedCost = missed * costPerMissed;
+
+  // 3. Classroom Downtime
+  const downtimeEventsPerRoom = downtimePerRoom[age];
+  const totalDowntime = Math.round(rooms * downtimeEventsPerRoom);
+  const costPerDowntime = 2000;
+  const downtimeCost = totalDowntime * costPerDowntime;
+
+  // 4. Excess Staff
+  const optimalFTE = Math.max(1, Math.round(curFTE * 0.55));
+  const excessFTE = Math.max(0, curFTE - optimalFTE);
+  const staffCost = excessFTE * salary;
+
+  // 5. Maintenance Escalation
+  const baseMaintenancePerRoom = 800;
+  const maintCost = rooms * baseMaintenancePerRoom * (mult * 0.6);
+
+  // 6. ADA Compliance Risk
+  // Scale with rooms and age
+  const adaBase = Math.min(rooms * 500, 300000) * mult * 0.4;
+  const adaCost = Math.max(25000, adaBase);
+
+  // 7. Retention
+  const retPctBase = { '3': 0.002, '5': 0.004, '7': 0.006, '10': 0.01 };
+  const retPct = retPctBase[age];
+  const retentionCost = students * retPct * tuition;
+
+  // Totals
+  const annual = ticketCost + missedCost + downtimeCost + staffCost + maintCost + adaCost + retentionCost;
+  const threeYear = annual * 3.15; // includes escalation
+
+  // Update displays
+  $('totalAnnual').textContent = fmt(annual);
+  $('totalThreeYear').textContent = fmt(threeYear);
+
+  const cats = [ticketCost, missedCost, downtimeCost, staffCost, maintCost, adaCost, retentionCost];
+  const maxCat = Math.max(...cats);
+
+  for (let i = 0; i < cats.length; i++) {
+    $('v' + (i+1)).textContent = fmt(cats[i]);
+    $('b' + (i+1)).style.width = (cats[i] / maxCat * 100) + '%';
+  }
+
+  // Detail fields
+  $('ticketsPerRoom').textContent = extraTickets;
+  $('totalTickets').textContent = totalExtraTickets.toLocaleString();
+  $('failRate').textContent = (failRate * 100).toFixed(1) + '%';
+  $('totalLectures').textContent = totalLectures.toLocaleString();
+  $('missedLectures').textContent = missed.toLocaleString();
+
+  $('downtimeEvents').textContent = downtimeEventsPerRoom.toFixed(1);
+  $('totalDowntimeHours').textContent = totalDowntime.toLocaleString();
+
+  $('curFTE').textContent = curFTE;
+  $('optFTE').textContent = optimalFTE;
+  $('savedFTE').textContent = excessFTE;
+  $('fteSavings').textContent = fmt(staffCost);
+
+  $('retPct').textContent = (retPct * 100).toFixed(1) + '%';
+  $('retStudents').textContent = students.toLocaleString();
+  $('retTuition').textContent = tuition.toLocaleString();
+
+  // Solution row
+  const bundleCost = 4729; // Essentials bundle
+  const totalInvest = rooms * bundleCost;
+  const paybackMonths = Math.round((totalInvest / annual) * 12);
+
+  $('solRooms').textContent = rooms;
+  $('solInvest').textContent = fmt(totalInvest);
+  $('solPayback').textContent = Math.min(paybackMonths, 36);
+  $('solROI').textContent = Math.round(((threeYear - totalInvest) / totalInvest) * 100) + '%';
+
+  // Talking points
+  const instName = $('instName').value || 'your institution';
+  $('tpCIO').textContent = `"At ${instName}, your team is fielding an estimated ${totalExtraTickets.toLocaleString()} extra AV support tickets per year and managing ${totalDowntime.toLocaleString()} disruptive classroom failures — that's ${fmt(ticketCost + downtimeCost)} in reactive costs. With cloud-managed Pearl systems, you could redeploy ${excessFTE} FTEs (${fmt(staffCost)}/yr) from firefighting to strategic projects."`;
+
+  $('tpProvost').textContent = `"With ${age}-year-old capture equipment, roughly ${missed.toLocaleString()} lectures go unrecorded or fail each year across ${rooms} rooms. Each missed capture means students lose review material — and with the April 2026 ADA deadline, every gap is a potential compliance complaint. Modern automated capture raises reliability to 99%+."`;
+
+  $('tpCFO').textContent = `"The 3-year cost of maintaining current infrastructure at ${instName} is approximately ${fmt(threeYear)}. Modernizing all ${rooms} rooms with Epiphan at ${fmt(totalInvest)} pays for itself in ${Math.min(paybackMonths, 36)} months. That's a ${Math.round(((threeYear - totalInvest) / totalInvest) * 100)}% ROI before counting retention gains of ${fmt(retentionCost)}/year."`;
+}
+
+function toggleDetail(id) {
+  const el = $(id);
+  const arrow = $('a' + id.charAt(1));
+  el.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function loadScenario(rooms) {
+  // Update active button
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  event.target.closest('.scenario-btn').classList.add('active');
+
+  const scenarios = {
+    50:  { rooms: 50,  students: 3000,  tuition: 20000, fte: 2, age: '5' },
+    150: { rooms: 150, students: 12000, tuition: 18000, fte: 5, age: '5' },
+    300: { rooms: 300, students: 20000, tuition: 15000, fte: 8, age: '5' },
+    600: { rooms: 600, students: 40000, tuition: 12000, fte: 14, age: '7' }
+  };
+  const s = scenarios[rooms];
+  $('rooms').value = s.rooms;
+  $('students').value = s.students;
+  $('tuition').value = s.tuition;
+  $('currentFTE').value = s.fte;
+  $('eqAge').value = s.age;
+  recalc();
+}
+
+// Init
+$('genDate').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+recalc();
+</script>
+
+</body>
+</html>
