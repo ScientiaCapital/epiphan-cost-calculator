@@ -1,0 +1,51 @@
+# Environment
+.env
+.env.local
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python (if any scripts added)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+
+# Node (if any tooling added)
+node_modules/
+*.log
+
+# Build
+dist/
+build/
+.vercel
+
+# Claude context
+.env*.local
+
+# MCP tool artifacts
+.playwright-mcp/
+.serena/
+
+# ===========================================
+# Observer Reports (ephemeral, per-session)
+# ===========================================
+# These are regenerated each session by observer agents.
+# Do NOT track them — they contain transient findings.
+.claude/OBSERVER_QUALITY.md
+.claude/OBSERVER_ARCH.md
+.claude/OBSERVER_ALERTS.md
+.claude/archive/*.md
+
+# Cost tracking (ephemeral)
+.claude/daily-cost.json
+costs/*.json
