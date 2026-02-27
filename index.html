@@ -15,6 +15,8 @@
     --amber-light: #fff3e0;
     --blue: #1565c0;
     --blue-light: #e3f2fd;
+    --teal: #00897b;
+    --teal-light: #e0f2f1;
     --gray-50: #fafafa;
     --gray-100: #f5f5f5;
     --gray-200: #eeeeee;
@@ -32,7 +34,6 @@
     line-height: 1.5;
   }
 
-  /* Header */
   .header {
     background: var(--navy);
     color: white;
@@ -48,7 +49,6 @@
   .header .sub { font-size: 13px; color: #90a4ae; }
   .header .brand { font-size: 13px; color: var(--green); font-weight: 600; }
 
-  /* Layout */
   .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
 
   .grid-2 {
@@ -62,7 +62,6 @@
     .grid-2 { grid-template-columns: 1fr; }
   }
 
-  /* Cards */
   .card {
     background: white;
     border-radius: 10px;
@@ -82,7 +81,6 @@
   }
   .card-body { padding: 20px; }
 
-  /* Input Panel */
   .input-panel { position: sticky; top: 24px; }
   .input-panel .card-header { background: var(--navy); color: white; }
 
@@ -112,7 +110,6 @@
 
   .divider { border-top: 1px solid var(--gray-200); margin: 16px 0; }
 
-  /* Big Number */
   .big-cost {
     text-align: center;
     padding: 20px;
@@ -135,7 +132,25 @@
   .three-year-box .label { font-size: 11px; font-weight: 700; color: #c62828; text-transform: uppercase; letter-spacing: 0.5px; }
   .three-year-box .number { font-size: 28px; font-weight: 800; color: #c62828; }
 
-  /* Cost Category Row */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 600px) {
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  .metric-card {
+    background: var(--teal-light);
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .metric-card .num { font-size: 22px; font-weight: 800; color: var(--teal); line-height: 1.2; }
+  .metric-card .lbl { font-size: 10px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 4px; }
+
   .cost-cat {
     padding: 16px 20px;
     border-bottom: 1px solid var(--gray-100);
@@ -191,7 +206,6 @@
   .cost-detail.open { display: block; }
   .cost-detail strong { color: var(--gray-800); }
 
-  /* Epiphan Solution Row */
   .solution-row {
     background: #e8f5e9;
     border-radius: 10px;
@@ -202,7 +216,7 @@
 
   .solution-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
   }
   .solution-card {
@@ -211,10 +225,28 @@
     padding: 14px;
     text-align: center;
   }
-  .solution-card .num { font-size: 24px; font-weight: 800; color: var(--green-dark); }
+  .solution-card .num { font-size: 22px; font-weight: 800; color: var(--green-dark); }
   .solution-card .lbl { font-size: 11px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+  .solution-card.hero { border: 2px solid var(--green); }
+  .solution-card.hero .num { font-size: 28px; }
 
-  /* Talking Points */
+  .solution-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.5;
+  }
+  .solution-note strong { color: var(--green-dark); }
+  .solution-ref {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--gray-600);
+    font-style: italic;
+  }
+
   .talking-points { margin-top: 20px; }
   .talking-points h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); margin-bottom: 12px; }
   .tp-card {
@@ -228,7 +260,6 @@
   .tp-card .role { font-size: 11px; font-weight: 700; color: var(--green-dark); text-transform: uppercase; letter-spacing: 0.3px; }
   .tp-card .msg { font-size: 13px; margin-top: 4px; color: var(--gray-800); }
 
-  /* Print */
   @media print {
     body { background: white; }
     .input-panel { position: static; }
@@ -238,7 +269,6 @@
     .container { padding: 12px; }
   }
 
-  /* Toggle arrow */
   .toggle-arrow {
     font-size: 10px;
     color: var(--gray-600);
@@ -247,7 +277,6 @@
   }
   .toggle-arrow.open { transform: rotate(90deg); }
 
-  /* Scenario Selector */
   .scenario-bar {
     display: flex;
     gap: 8px;
@@ -297,19 +326,15 @@
   <!-- LEFT: Inputs -->
   <div class="input-panel">
     <div class="card">
-      <div class="card-header">&#9881; Institution Profile</div>
+      <div class="card-header">&#9881; Your Campus Profile</div>
       <div class="card-body">
-        <div class="field">
-          <label>Institution Name</label>
-          <input type="text" id="instName" placeholder="e.g. Georgia Tech" oninput="recalc()">
-        </div>
         <div class="field">
           <label>AV-Equipped Rooms</label>
           <input type="number" id="rooms" value="300" min="1" max="5000" oninput="recalc()">
           <div class="hint">Classrooms, lecture halls, labs, studios</div>
         </div>
         <div class="field">
-          <label>Average Equipment Age (years)</label>
+          <label>Average Equipment Age</label>
           <select id="eqAge" onchange="recalc()">
             <option value="3">3 years (approaching refresh)</option>
             <option value="5" selected>5 years (standard cycle end)</option>
@@ -328,12 +353,12 @@
           <input type="number" id="teachWeeks" value="30" min="20" max="52" oninput="recalc()">
         </div>
         <div class="field">
-          <label>Students per Institution</label>
-          <input type="number" id="students" value="20000" min="500" max="100000" step="500" oninput="recalc()">
+          <label>Enrolled Students</label>
+          <input type="number" id="students" value="25000" min="500" max="100000" step="500" oninput="recalc()">
         </div>
         <div class="field">
           <label>Avg Annual Tuition ($)</label>
-          <input type="number" id="tuition" value="15000" min="1000" max="80000" step="500" oninput="recalc()">
+          <input type="number" id="tuition" value="18000" min="1000" max="80000" step="500" oninput="recalc()">
         </div>
         <div class="divider"></div>
         <div class="field">
@@ -341,8 +366,9 @@
           <input type="number" id="itSalary" value="90000" min="40000" max="200000" step="5000" oninput="recalc()">
         </div>
         <div class="field">
-          <label>Current AV Technicians (FTEs)</label>
-          <input type="number" id="currentFTE" value="8" min="1" max="50" oninput="recalc()">
+          <label>Current AV / Media Staff (FTEs)</label>
+          <input type="number" id="currentFTE" value="6" min="1" max="50" oninput="recalc()">
+          <div class="hint">Industry avg: 47 rooms per person</div>
         </div>
       </div>
     </div>
@@ -362,37 +388,57 @@
       <div class="number" id="totalThreeYear">$0</div>
     </div>
 
+    <!-- Summary Metrics -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="num" id="metricHours">0</div>
+        <div class="lbl">Hours Reclaimed / Year</div>
+      </div>
+      <div class="metric-card">
+        <div class="num" id="metricLectures">0</div>
+        <div class="lbl">Lectures Saved / Year</div>
+      </div>
+      <div class="metric-card">
+        <div class="num" id="metricEfficiency">0 &#8594; 100+</div>
+        <div class="lbl">Rooms / Staff Member</div>
+      </div>
+      <div class="metric-card">
+        <div class="num" id="metricPayback">0 mo</div>
+        <div class="lbl">Payback Period</div>
+      </div>
+    </div>
+
     <!-- Cost Breakdown -->
     <div class="card" style="margin-bottom: 20px;">
       <div class="card-header">&#128200; Cost Breakdown</div>
       <div>
 
-        <!-- 1. Support Tickets -->
+        <!-- 1. IT Staff Time Wasted -->
         <div class="cost-cat" onclick="toggleDetail('d1')">
           <div class="cost-cat-top">
-            <div class="cost-cat-name"><span class="toggle-arrow" id="a1">&#9654;</span> Support Ticket Overload</div>
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a1">&#9654;</span> IT Staff Time Wasted</div>
             <div class="cost-cat-value" id="v1">$0</div>
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b1" style="width:0%"></div></div>
           <div class="cost-detail" id="d1">
-            Aging equipment generates <strong id="ticketsPerRoom">12</strong> extra tickets/room/year vs. modern systems at <strong>$22–$104/ticket</strong> depending on escalation tier.
-            That's <strong id="totalTickets">0</strong> additional tickets your team is fielding annually — each one pulling a technician away from strategic projects.
-            <br><em>Source: MetricNet Service Desk benchmarks, HDI Industry data</em>
+            Aging equipment generates <strong id="ticketsPerRoom">4.6</strong> tickets/room/year at a blended cost of <strong>$35/ticket</strong> (Tier 1&#8211;3).
+            That's <strong id="totalTickets">0</strong> tickets consuming <strong id="ticketHours">0</strong> hours/year of technician time &#8212; each ticket averaging 45 minutes of hands-on support.
+            <br><em>Baseline: 4.6 tickets/room/year (Epiphan AV Professional Survey, 500+ respondents). Cost per tier: MetricNet ($22 T1, $65 T2, $104 T3).</em>
           </div>
         </div>
 
-        <!-- 2. Missed Captures -->
+        <!-- 2. Failed & Missed Captures -->
         <div class="cost-cat" onclick="toggleDetail('d2')">
           <div class="cost-cat-top">
-            <div class="cost-cat-name"><span class="toggle-arrow" id="a2">&#9654;</span> Failed / Missed Captures</div>
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a2">&#9654;</span> Failed &amp; Missed Captures</div>
             <div class="cost-cat-value" id="v2">$0</div>
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b2" style="width:0%"></div></div>
           <div class="cost-detail" id="d2">
-            Aging capture systems have a <strong id="failRate">0%</strong> failure rate.
-            Of <strong id="totalLectures">0</strong> scheduled captures/year, roughly <strong id="missedLectures">0</strong> fail or produce unusable recordings.
-            Each missed capture affects <strong>30–200 students</strong> who lose access to review material, with direct impact on accessibility compliance and student complaints.
-            <br><em>Cost estimated at $150–$400/incident (rescheduling, re-recording, student support, complaint handling)</em>
+            Your capture fleet has an estimated <strong id="failRate">0%</strong> failure rate.
+            Of <strong id="totalLectures">0</strong> scheduled captures/year, roughly <strong id="missedLectures">0</strong> fail or produce unusable recordings &#8212; affecting an estimated <strong id="studentsAffected">0</strong> student-views.
+            Each incident costs approximately <strong>$250</strong> in rescheduling, re-recording, and complaint handling.
+            <br><em>Reference: NC State achieved 99%+ capture reliability with Pearl fleet. NTNU runs 700 rooms with zero dedicated operators and near-zero failure rate.</em>
           </div>
         </div>
 
@@ -405,58 +451,59 @@
           <div class="cost-bar-wrap"><div class="cost-bar bar-amber" id="b3" style="width:0%"></div></div>
           <div class="cost-detail" id="d3">
             Each AV failure that disrupts a class session costs approximately <strong>$2,000</strong> (instructor time + student time + rescheduling).
-            Aging rooms average <strong id="downtimeEvents">0</strong> disruptive failures/year vs. &lt;0.5 for modern cloud-managed systems.
-            That's <strong id="totalDowntimeHours">0</strong> disrupted class sessions across your campus annually.
-            <br><em>Source: eCampus News / Cenero Downtime Calculator methodology</em>
+            Aging rooms average <strong id="downtimeEvents">0</strong> disruptive failures/room/year vs. &lt;0.5 for cloud-managed systems.
+            That's <strong id="totalDowntimeEvents">0</strong> disrupted class sessions across your campus annually.
+            <br><em>Source: eCampus News / Cenero downtime cost methodology</em>
           </div>
         </div>
 
-        <!-- 4. Excess Staff Burden -->
+        <!-- 4. Manual Operation Burden -->
         <div class="cost-cat" onclick="toggleDetail('d4')">
           <div class="cost-cat-top">
-            <div class="cost-cat-name"><span class="toggle-arrow" id="a4">&#9654;</span> Excess Staff / Labor Burden</div>
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a4">&#9654;</span> Manual Operation Burden</div>
             <div class="cost-cat-value" id="v4">$0</div>
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-amber" id="b4" style="width:0%"></div></div>
           <div class="cost-detail" id="d4">
-            Cloud-managed AV systems reduce support FTE requirements by <strong>40–50%</strong>.
-            Your current <strong id="curFTE">0</strong> AV technicians could be reduced to <strong id="optFTE">0</strong> with modern infrastructure — freeing <strong id="savedFTE">0</strong> FTEs for strategic projects or saving <strong id="fteSavings">$0</strong>/year.
-            <br><em>Source: Collegis Education, OculusIT managed services benchmarks</em>
+            Your team currently manages <strong id="curRoomsPerPerson">0</strong> rooms/person &#8212; industry average is 47.
+            With automated cloud-managed systems, best-practice institutions achieve <strong>100+ rooms/person</strong>.
+            Your current <strong id="curFTE">0</strong> AV staff could operate at the efficiency of <strong id="optFTE">0</strong> &#8212; freeing <strong id="savedFTE">0</strong> FTEs (<strong id="fteSavings">$0</strong>/yr) for strategic projects instead of manual room-by-room operation.
+            <br><em>NC State: 300+ rooms, team of 3. UNLV: 215 units, remote fleet management. Source: Epiphan AV Professional Survey (500+ respondents), Collegis Education.</em>
           </div>
         </div>
 
-        <!-- 5. Maintenance Escalation -->
+        <!-- 5. Configuration & Maintenance Labor -->
         <div class="cost-cat" onclick="toggleDetail('d5')">
           <div class="cost-cat-top">
-            <div class="cost-cat-name"><span class="toggle-arrow" id="a5">&#9654;</span> Maintenance & Emergency Repairs</div>
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a5">&#9654;</span> Configuration &amp; Maintenance Labor</div>
             <div class="cost-cat-value" id="v5">$0</div>
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-blue" id="b5" style="width:0%"></div></div>
           <div class="cost-detail" id="d5">
-            Maintenance contracts escalate <strong>3–5% annually</strong> as equipment ages.
-            Emergency repairs cost <strong>3–5x</strong> more than preventive maintenance.
-            Parts for discontinued equipment (Extron SMP, older Matrox) become scarce and expensive, with lead times stretching to weeks.
-            <br><em>Source: REMI Group equipment lifecycle analysis</em>
+            Multi-vendor RTSP configuration averages <strong id="configHrsPerRoom">2.5</strong> hours/room at <strong>$55/hr</strong> fully loaded IT cost.
+            Legacy firmware updates require manual, room-by-room intervention across your fleet.
+            Parts for discontinued capture hardware become scarce and expensive, with lead times stretching to weeks as manufacturers reach end-of-life.
+            <br><em>Source: REMI Group equipment lifecycle analysis, Epiphan TCO model. Reference: Dartmouth OpenAV saved $1.6M vs. commercial integrators across 140 classrooms.</em>
           </div>
         </div>
 
-        <!-- 6. ADA Compliance Risk -->
+        <!-- 6. ADA Compliance Exposure -->
         <div class="cost-cat" onclick="toggleDetail('d6')">
           <div class="cost-cat-top">
-            <div class="cost-cat-name"><span class="toggle-arrow" id="a6">&#9654;</span> ADA / Accessibility Compliance Risk</div>
+            <div class="cost-cat-name"><span class="toggle-arrow" id="a6">&#9654;</span> ADA / Accessibility Compliance Exposure</div>
             <div class="cost-cat-value" id="v6">$0</div>
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-red" id="b6" style="width:0%"></div></div>
           <div class="cost-detail" id="d6">
-            <strong>April 2026 deadline</strong>: Public entities (50K+ pop) must meet WCAG 2.1 Level AA for all digital content — including lecture recordings.
+            <strong>April 24, 2026 deadline</strong>: Public entities must meet WCAG 2.1 Level AA for all digital content &#8212; including lecture recordings.
             <strong>97% of U.S. colleges</strong> currently have accessibility gaps.
-            Average settlement: <strong>$27K per case</strong>, with legal defense adding $15K–$50K per complaint.
-            Without automated, reliable capture feeding into accessible CMS platforms, every missed or poor-quality recording is a compliance liability.
+            Average settlement: <strong>$27K per case</strong>. Legal defense: <strong>$15K&#8211;$50K per complaint</strong>.
+            Unreliable capture means missing recordings &#8212; and every gap is a compliance liability waiting to surface.
             <br><em>Source: AGB Policy Alert, 3Play Media, AudioEye compliance database</em>
           </div>
         </div>
 
-        <!-- 7. Retention Risk -->
+        <!-- 7. Student Retention Impact -->
         <div class="cost-cat" onclick="toggleDetail('d7')">
           <div class="cost-cat-top">
             <div class="cost-cat-name"><span class="toggle-arrow" id="a7">&#9654;</span> Student Retention Impact</div>
@@ -464,10 +511,11 @@
           </div>
           <div class="cost-bar-wrap"><div class="cost-bar bar-blue" id="b7" style="width:0%"></div></div>
           <div class="cost-detail" id="d7">
-            Poor classroom technology is cited by <strong>70% of in-person</strong> and <strong>79% of online</strong> students as impacting their learning.
+            <strong>70% of in-person</strong> and <strong>79% of online</strong> students say classroom technology impacts their learning decisions.
             Research shows lecture capture access reduces attrition from <strong>12.3% to 5%</strong>.
-            Even a conservative <strong id="retPct">0.5%</strong> retention improvement on <strong id="retStudents">0</strong> students at $<strong id="retTuition">0</strong> avg tuition = significant revenue recovery.
-            <br><em>Source: Collegis Education, Springer Higher Education research</em>
+            Students retain <strong>25&#8211;30% more content</strong> with instructor + slides video vs. audio-only or no recording.
+            Even a conservative <strong id="retPct">0.5%</strong> retention improvement on <strong id="retStudents">0</strong> students at $<strong id="retTuition">0</strong> tuition = significant revenue recovery.
+            <br><em>Source: Springer Higher Education research, Collegis Education</em>
           </div>
         </div>
 
@@ -476,24 +524,38 @@
 
     <!-- Epiphan Solution -->
     <div class="solution-row">
-      <h3>&#9989; What Epiphan Solves</h3>
+      <h3>&#9989; The Epiphan Path Forward</h3>
       <div class="solution-grid">
+        <div class="solution-card hero">
+          <div class="num" id="solHours">0</div>
+          <div class="lbl">Hours Reclaimed / Year</div>
+        </div>
+        <div class="solution-card hero">
+          <div class="num" id="solLectures">0</div>
+          <div class="lbl">Lectures Saved / Year</div>
+        </div>
         <div class="solution-card">
-          <div class="num" id="solRooms">0</div>
-          <div class="lbl">Rooms modernized with Pearl Nexus + EC20</div>
+          <div class="num" id="solEfficiency">0 &#8594; 100+</div>
+          <div class="lbl">Rooms / Staff Member</div>
         </div>
         <div class="solution-card">
           <div class="num" id="solInvest">$0</div>
-          <div class="lbl">Investment (Essentials Bundle)</div>
+          <div class="lbl">Investment ($5,198/room)</div>
         </div>
         <div class="solution-card">
           <div class="num" id="solPayback">0</div>
-          <div class="lbl">Month payback period</div>
+          <div class="lbl">Month Payback Period</div>
         </div>
         <div class="solution-card">
           <div class="num" id="solROI">0%</div>
           <div class="lbl">3-Year ROI</div>
         </div>
+      </div>
+      <div class="solution-note">
+        <strong>Includes free Epiphan Edge cloud fleet management</strong> &#8212; monitor and manage all devices from one dashboard. No recurring fees for basic monitoring and status dashboards. Per room: Pearl Nexus ($3,299) + EC20 PTZ Camera ($1,899).
+      </div>
+      <div class="solution-ref">
+        Reference deployments: NC State (300+ rooms, team of 3) &#8226; UNLV (215 units, remote fleet mgmt) &#8226; MTSU (428 rooms) &#8226; NTNU (700 rooms, 42K students, zero dedicated operators)
       </div>
     </div>
 
@@ -502,20 +564,32 @@
       <h3>&#128172; Discovery Call Talking Points</h3>
       <div class="tp-card">
         <div class="role">For the CIO / VP of IT</div>
-        <div class="msg" id="tpCIO">"Your team is spending an estimated $X/year just keeping aging AV alive — that's X FTEs worth of reactive support that could be redeployed to strategic initiatives."</div>
+        <div class="msg" id="tpCIO"></div>
       </div>
       <div class="tp-card">
         <div class="role">For the Provost / Academic Affairs</div>
-        <div class="msg" id="tpProvost">"With X failed captures per year across X rooms, students are losing access to learning materials — and each incident is a potential ADA complaint with the April 2026 deadline approaching."</div>
+        <div class="msg" id="tpProvost"></div>
       </div>
       <div class="tp-card">
         <div class="role">For the CFO / Budget Office</div>
-        <div class="msg" id="tpCFO">"The 3-year cost of maintaining your current infrastructure is $X. Modernizing with Epiphan at $X pays for itself in X months through reduced support costs and avoided compliance exposure."</div>
+        <div class="msg" id="tpCFO"></div>
       </div>
     </div>
 
-    <div style="margin-top: 20px; padding: 12px 16px; background: var(--gray-100); border-radius: 8px; font-size: 11px; color: var(--gray-600);">
-      <strong>Methodology:</strong> Calculations use industry benchmarks from MetricNet, HDI, eCampus News, Collegis Education, and ADA compliance data. Actual costs vary by institution. Figures represent conservative estimates — real exposure may be higher. Generated <span id="genDate"></span> for Epiphan Video BDR use.
+    <div style="margin-top: 20px; padding: 16px; background: var(--gray-100); border-radius: 8px; font-size: 11px; color: var(--gray-600); line-height: 1.7;">
+      <strong>Methodology &amp; Sources:</strong>
+      MetricNet Service Desk Benchmarks (support costs: $22/$65/$104 by tier) &#8226;
+      HDI Industry Report (escalation tier pricing) &#8226;
+      IPEDS College Scorecard (room estimation: ~64 rooms/1K students) &#8226;
+      Springer Higher Education (lecture capture retention: 12.3% &#8594; 5%) &#8226;
+      Collegis Education / OculusIT (staff efficiency benchmarks) &#8226;
+      3Play Media / AudioEye (ADA compliance: 97% gap, $27K avg settlement) &#8226;
+      eCampus News / Cenero (downtime cost: $2K/event) &#8226;
+      Epiphan AV Professional Survey 2025 (500+ respondents, 47 rooms/person avg) &#8226;
+      Dartmouth OpenAV ($1.6M savings across 140 classrooms) &#8226;
+      Reference deployments: NC State (300+), UNLV (215), MTSU (428), NTNU (700 rooms).
+      Figures represent conservative estimates &#8212; actual exposure may be higher.
+      Generated <span id="genDate"></span> for Epiphan Video BDR use.
     </div>
 
   </div>
@@ -523,138 +597,179 @@
 </div>
 
 <script>
-// Age multipliers — how much worse things get as equipment ages
-const ageMultipliers = { '3': 0.5, '5': 1.0, '7': 1.6, '10': 2.5 };
-const failRates =      { '3': 0.03, '5': 0.06, '7': 0.10, '10': 0.18 };
-const downtimePerRoom = { '3': 1.0, '5': 2.5, '7': 4.0, '10': 6.0 };
-const ticketsExtra =    { '3': 4, '5': 10, '7': 18, '10': 30 };
+// Research-backed multipliers by equipment age
+var ticketBaseRate = 4.6; // tickets/room/year (Epiphan AV Survey baseline)
+var ticketAgeMult  = { '3': 0.5, '5': 1.0, '7': 1.8, '10': 3.0 };
+var failRates      = { '3': 0.03, '5': 0.06, '7': 0.10, '10': 0.18 };
+var downtimePerRoom = { '3': 1.0, '5': 2.5, '7': 4.0, '10': 6.0 };
+var configHrsRoom  = { '3': 1.0, '5': 2.5, '7': 3.5, '10': 4.0 };
+var partsPerRoom   = { '3': 50, '5': 150, '7': 350, '10': 700 };
+var adaPerRoom     = { '3': 80, '5': 200, '7': 400, '10': 750 };
+var retPctByAge    = { '3': 0.002, '5': 0.005, '7': 0.008, '10': 0.01 };
+
+// Constants
+var COST_PER_TICKET = 35;       // Blended MetricNet tier 1-3
+var MINUTES_PER_TICKET = 45;
+var COST_PER_MISSED = 250;      // Rescheduling, re-recording, complaints
+var STUDENTS_PER_LECTURE = 75;  // Avg students affected per missed capture
+var COST_PER_DOWNTIME = 2000;   // eCampus News / Cenero
+var IT_HOURLY_RATE = 55;        // Fully loaded IT cost
+var OPTIMAL_ROOMS_PER_PERSON = 100; // Best practice (NC State benchmark)
+var PER_ROOM_INVEST = 5198;     // Pearl Nexus $3,299 + EC20 $1,899
 
 function $(id) { return document.getElementById(id); }
 function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtK(n) { return n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : Math.round(n).toLocaleString(); }
 
 function recalc() {
-  const rooms = parseInt($('rooms').value) || 300;
-  const age = $('eqAge').value;
-  const lectPerWk = parseInt($('lecturesPerWeek').value) || 15;
-  const weeks = parseInt($('teachWeeks').value) || 30;
-  const students = parseInt($('students').value) || 20000;
-  const tuition = parseInt($('tuition').value) || 15000;
-  const salary = parseInt($('itSalary').value) || 90000;
-  const curFTE = parseInt($('currentFTE').value) || 8;
+  var rooms = parseInt($('rooms').value) || 300;
+  var age = $('eqAge').value;
+  var lectPerWk = parseInt($('lecturesPerWeek').value) || 15;
+  var weeks = parseInt($('teachWeeks').value) || 30;
+  var students = parseInt($('students').value) || 25000;
+  var tuition = parseInt($('tuition').value) || 18000;
+  var salary = parseInt($('itSalary').value) || 90000;
+  var curFTE = parseInt($('currentFTE').value) || 6;
 
-  const mult = ageMultipliers[age];
-  const totalLectures = rooms * lectPerWk * weeks;
+  var totalLectures = rooms * lectPerWk * weeks;
 
-  // 1. Support Tickets
-  const extraTickets = ticketsExtra[age];
-  const totalExtraTickets = rooms * extraTickets;
-  const avgTicketCost = 35; // blended tier 1-3
-  const ticketCost = totalExtraTickets * avgTicketCost;
+  // 1. IT Staff Time Wasted
+  var ticketsPerRoomYr = ticketBaseRate * ticketAgeMult[age];
+  var totalTickets = Math.round(rooms * ticketsPerRoomYr);
+  var ticketHours = Math.round(totalTickets * MINUTES_PER_TICKET / 60);
+  var ticketCost = totalTickets * COST_PER_TICKET;
 
-  // 2. Missed Captures
-  const failRate = failRates[age];
-  const missed = Math.round(totalLectures * failRate);
-  const costPerMissed = 250;
-  const missedCost = missed * costPerMissed;
+  // 2. Failed & Missed Captures
+  var failRate = failRates[age];
+  var missed = Math.round(totalLectures * failRate);
+  var studentsAffected = missed * STUDENTS_PER_LECTURE;
+  var missedCost = missed * COST_PER_MISSED;
 
   // 3. Classroom Downtime
-  const downtimeEventsPerRoom = downtimePerRoom[age];
-  const totalDowntime = Math.round(rooms * downtimeEventsPerRoom);
-  const costPerDowntime = 2000;
-  const downtimeCost = totalDowntime * costPerDowntime;
+  var dtEventsPerRoom = downtimePerRoom[age];
+  var totalDtEvents = Math.round(rooms * dtEventsPerRoom);
+  var downtimeCost = totalDtEvents * COST_PER_DOWNTIME;
 
-  // 4. Excess Staff
-  const optimalFTE = Math.max(1, Math.round(curFTE * 0.55));
-  const excessFTE = Math.max(0, curFTE - optimalFTE);
-  const staffCost = excessFTE * salary;
+  // 4. Manual Operation Burden (FTE redeployment)
+  var curRoomsPerPerson = Math.round(rooms / curFTE);
+  var optimalFTE = Math.max(1, Math.ceil(rooms / OPTIMAL_ROOMS_PER_PERSON));
+  var excessFTE = Math.max(0, curFTE - optimalFTE);
+  var staffCost = excessFTE * salary;
 
-  // 5. Maintenance Escalation
-  const baseMaintenancePerRoom = 800;
-  const maintCost = rooms * baseMaintenancePerRoom * (mult * 0.6);
+  // 5. Configuration & Maintenance Labor
+  var cfgHrs = configHrsRoom[age];
+  var configLabor = rooms * cfgHrs * IT_HOURLY_RATE;
+  var partsCost = rooms * partsPerRoom[age];
+  var maintCost = configLabor + partsCost;
 
-  // 6. ADA Compliance Risk
-  // Scale with rooms and age
-  const adaBase = Math.min(rooms * 500, 300000) * mult * 0.4;
-  const adaCost = Math.max(25000, adaBase);
+  // 6. ADA Compliance Exposure
+  var adaCost = Math.max(25000, rooms * adaPerRoom[age]);
 
-  // 7. Retention
-  const retPctBase = { '3': 0.002, '5': 0.004, '7': 0.006, '10': 0.01 };
-  const retPct = retPctBase[age];
-  const retentionCost = students * retPct * tuition;
+  // 7. Student Retention Impact
+  var retPct = retPctByAge[age];
+  var retentionCost = students * retPct * tuition;
 
   // Totals
-  const annual = ticketCost + missedCost + downtimeCost + staffCost + maintCost + adaCost + retentionCost;
-  const threeYear = annual * 3.15; // includes escalation
+  var annual = ticketCost + missedCost + downtimeCost + staffCost + maintCost + adaCost + retentionCost;
+  var threeYear = annual * 3.15; // includes escalation factor
 
-  // Update displays
+  // Hours reclaimed = ticket handling hours + config labor hours
+  var hoursReclaimed = ticketHours + Math.round(rooms * cfgHrs);
+
+  // Investment
+  var totalInvest = rooms * PER_ROOM_INVEST;
+  var paybackMonths = Math.min(36, Math.max(1, Math.round((totalInvest / annual) * 12)));
+  var roi3yr = Math.round(((threeYear - totalInvest) / totalInvest) * 100);
+
+  // -- Update displays --
+
   $('totalAnnual').textContent = fmt(annual);
   $('totalThreeYear').textContent = fmt(threeYear);
 
-  const cats = [ticketCost, missedCost, downtimeCost, staffCost, maintCost, adaCost, retentionCost];
-  const maxCat = Math.max(...cats);
+  // Summary metrics
+  $('metricHours').textContent = fmtK(hoursReclaimed);
+  $('metricLectures').textContent = fmtK(missed);
+  $('metricEfficiency').textContent = curRoomsPerPerson + ' \u2192 100+';
+  $('metricPayback').textContent = paybackMonths + ' mo';
 
-  for (let i = 0; i < cats.length; i++) {
-    $('v' + (i+1)).textContent = fmt(cats[i]);
-    $('b' + (i+1)).style.width = (cats[i] / maxCat * 100) + '%';
+  // Cost bars
+  var cats = [ticketCost, missedCost, downtimeCost, staffCost, maintCost, adaCost, retentionCost];
+  var maxCat = Math.max.apply(null, cats);
+
+  for (var i = 0; i < cats.length; i++) {
+    $('v' + (i + 1)).textContent = fmt(cats[i]);
+    $('b' + (i + 1)).style.width = (maxCat > 0 ? (cats[i] / maxCat * 100) : 0) + '%';
   }
 
-  // Detail fields
-  $('ticketsPerRoom').textContent = extraTickets;
-  $('totalTickets').textContent = totalExtraTickets.toLocaleString();
-  $('failRate').textContent = (failRate * 100).toFixed(1) + '%';
+  // Detail fields - Category 1
+  $('ticketsPerRoom').textContent = ticketsPerRoomYr.toFixed(1);
+  $('totalTickets').textContent = totalTickets.toLocaleString();
+  $('ticketHours').textContent = ticketHours.toLocaleString();
+
+  // Category 2
+  $('failRate').textContent = (failRate * 100).toFixed(0) + '%';
   $('totalLectures').textContent = totalLectures.toLocaleString();
   $('missedLectures').textContent = missed.toLocaleString();
+  $('studentsAffected').textContent = studentsAffected.toLocaleString();
 
-  $('downtimeEvents').textContent = downtimeEventsPerRoom.toFixed(1);
-  $('totalDowntimeHours').textContent = totalDowntime.toLocaleString();
+  // Category 3
+  $('downtimeEvents').textContent = dtEventsPerRoom.toFixed(1);
+  $('totalDowntimeEvents').textContent = totalDtEvents.toLocaleString();
 
+  // Category 4
+  $('curRoomsPerPerson').textContent = curRoomsPerPerson;
   $('curFTE').textContent = curFTE;
   $('optFTE').textContent = optimalFTE;
   $('savedFTE').textContent = excessFTE;
   $('fteSavings').textContent = fmt(staffCost);
 
+  // Category 5
+  $('configHrsPerRoom').textContent = cfgHrs.toFixed(1);
+
+  // Category 7
   $('retPct').textContent = (retPct * 100).toFixed(1) + '%';
   $('retStudents').textContent = students.toLocaleString();
   $('retTuition').textContent = tuition.toLocaleString();
 
   // Solution row
-  const bundleCost = 4729; // Essentials bundle
-  const totalInvest = rooms * bundleCost;
-  const paybackMonths = Math.round((totalInvest / annual) * 12);
-
-  $('solRooms').textContent = rooms;
+  $('solHours').textContent = fmtK(hoursReclaimed);
+  $('solLectures').textContent = fmtK(missed);
+  $('solEfficiency').textContent = curRoomsPerPerson + ' \u2192 100+';
   $('solInvest').textContent = fmt(totalInvest);
-  $('solPayback').textContent = Math.min(paybackMonths, 36);
-  $('solROI').textContent = Math.round(((threeYear - totalInvest) / totalInvest) * 100) + '%';
+  $('solPayback').textContent = paybackMonths;
+  $('solROI').textContent = roi3yr + '%';
 
-  // Talking points
-  const instName = $('instName').value || 'your institution';
-  $('tpCIO').textContent = `"At ${instName}, your team is fielding an estimated ${totalExtraTickets.toLocaleString()} extra AV support tickets per year and managing ${totalDowntime.toLocaleString()} disruptive classroom failures — that's ${fmt(ticketCost + downtimeCost)} in reactive costs. With cloud-managed Pearl systems, you could redeploy ${excessFTE} FTEs (${fmt(staffCost)}/yr) from firefighting to strategic projects."`;
+  // Talking points - CIO/VP of IT
+  $('tpCIO').textContent =
+    '"Your team is fielding an estimated ' + totalTickets.toLocaleString() + ' AV support tickets per year \u2014 that\'s ' + ticketHours.toLocaleString() + ' hours of reactive firefighting. With automated, cloud-managed systems, institutions like NC State manage 300+ rooms with a team of 3. That could free ' + excessFTE + ' of your ' + curFTE + ' FTEs (' + fmt(staffCost) + '/yr) to focus on strategic projects instead of room-by-room troubleshooting."';
 
-  $('tpProvost').textContent = `"With ${age}-year-old capture equipment, roughly ${missed.toLocaleString()} lectures go unrecorded or fail each year across ${rooms} rooms. Each missed capture means students lose review material — and with the April 2026 ADA deadline, every gap is a potential compliance complaint. Modern automated capture raises reliability to 99%+."`;
+  // Provost / Academic Affairs
+  $('tpProvost').textContent =
+    '"With ' + age + '-year-old capture equipment, roughly ' + missed.toLocaleString() + ' lectures go unrecorded or fail each year across ' + rooms + ' rooms \u2014 affecting an estimated ' + studentsAffected.toLocaleString() + ' student-views. NTNU runs 700 rooms for 42,000 students with near-zero failure and zero dedicated operators. The April 24, 2026 ADA deadline makes every missed recording a compliance liability."';
 
-  $('tpCFO').textContent = `"The 3-year cost of maintaining current infrastructure at ${instName} is approximately ${fmt(threeYear)}. Modernizing all ${rooms} rooms with Epiphan at ${fmt(totalInvest)} pays for itself in ${Math.min(paybackMonths, 36)} months. That's a ${Math.round(((threeYear - totalInvest) / totalInvest) * 100)}% ROI before counting retention gains of ${fmt(retentionCost)}/year."`;
+  // CFO / Budget Office
+  $('tpCFO').textContent =
+    '"The 3-year cost of maintaining current infrastructure is approximately ' + fmt(threeYear) + '. Modernizing all ' + rooms + ' rooms with Epiphan at ' + fmt(totalInvest) + ' pays for itself in ' + paybackMonths + ' months \u2014 a ' + roi3yr + '% three-year ROI. No recurring software fees for basic fleet management, and the hardware investment is a one-time CapEx line item."';
 }
 
 function toggleDetail(id) {
-  const el = $(id);
-  const arrow = $('a' + id.charAt(1));
+  var el = $(id);
+  var arrow = $('a' + id.charAt(1));
   el.classList.toggle('open');
   arrow.classList.toggle('open');
 }
 
 function loadScenario(rooms) {
-  // Update active button
-  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.scenario-btn').forEach(function(b) { b.classList.remove('active'); });
   event.target.closest('.scenario-btn').classList.add('active');
 
-  const scenarios = {
-    50:  { rooms: 50,  students: 3000,  tuition: 20000, fte: 2, age: '5' },
-    150: { rooms: 150, students: 12000, tuition: 18000, fte: 5, age: '5' },
-    300: { rooms: 300, students: 20000, tuition: 15000, fte: 8, age: '5' },
-    600: { rooms: 600, students: 40000, tuition: 12000, fte: 14, age: '7' }
+  var scenarios = {
+    50:  { rooms: 50,  students: 3000,  tuition: 25000, fte: 2, age: '5' },
+    150: { rooms: 150, students: 12000, tuition: 20000, fte: 4, age: '5' },
+    300: { rooms: 300, students: 25000, tuition: 18000, fte: 6, age: '5' },
+    600: { rooms: 600, students: 45000, tuition: 15000, fte: 12, age: '7' }
   };
-  const s = scenarios[rooms];
+  var s = scenarios[rooms];
   $('rooms').value = s.rooms;
   $('students').value = s.students;
   $('tuition').value = s.tuition;
