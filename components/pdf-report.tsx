@@ -322,7 +322,7 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
           </View>
           <View style={[s.roiCard, { backgroundColor: GREEN }]}>
             <Text style={[s.roiValue, { color: WHITE }]}>
-              {results.roi3Year}%
+              {results.roi3Year.toLocaleString()}%
             </Text>
             <Text style={[s.roiLabel, { color: WHITE }]}>3-Year ROI</Text>
           </View>
