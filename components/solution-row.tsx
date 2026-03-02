@@ -13,7 +13,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
     { value: `${r.currentRoomsPerPerson} → 100+`, label: "Rooms / Staff Member", hero: false },
     { value: formatCurrency(r.totalInvestment), label: "Investment ($5,198/room)", hero: false },
     { value: String(r.paybackMonths), label: "Month Payback Period", hero: false },
-    { value: `${r.roi3Year}%`, label: "3-Year ROI", hero: false },
+    { value: `${r.roi3Year.toLocaleString()}%`, label: "3-Year ROI", hero: false },
   ];
 
   return (
