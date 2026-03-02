@@ -12,6 +12,7 @@ import { MetricsRow } from "@/components/metrics-row";
 import { CostBreakdown } from "@/components/cost-breakdown";
 import { SolutionRow } from "@/components/solution-row";
 import { ShareButton } from "@/components/share-button";
+import { PdfDownloadButton } from "@/components/pdf-download-button";
 import { Methodology } from "@/components/methodology";
 
 export default function Home() {
@@ -53,6 +54,7 @@ export default function Home() {
             <CostBreakdown inputs={inputs} results={results} />
             <SolutionRow inputs={inputs} results={results} />
             <ShareButton inputs={inputs} />
+            <PdfDownloadButton inputs={inputs} results={results} />
             <Methodology />
           </div>
         </div>
