@@ -16,6 +16,16 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         &#128200; Cost Breakdown
       </div>
       <div>
+        {/* ── Tier 1: Operational Costs ─────────────────────────────── */}
+        <div className="px-5 pt-4 pb-2 bg-[#f8f9fa] border-b border-[#eeeeee]">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#1a2332]">
+            Your Operational Costs
+          </div>
+          <div className="text-[11px] text-[#757575] mt-0.5">
+            What you&apos;re spending today — visible in helpdesk reports, payroll, and parts invoices
+          </div>
+        </div>
+
         {/* 1. IT Staff Time Wasted */}
         <CostCategory name="IT Staff Time Wasted" cost={r.ticketCost} barColor="red" maxCost={maxCost}>
           Aging equipment generates <strong className="text-[#424242]">{r.ticketsPerRoomYear.toFixed(1)}</strong> tickets/room/year
@@ -25,27 +35,6 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
           of technician time — each ticket averaging 45 minutes of hands-on support.
           <br />
           <em>Baseline: 4.6 tickets/room/year (Epiphan AV Professional Survey, 500+ respondents). Cost per tier: MetricNet ($22 T1, $65 T2, $104 T3).</em>
-        </CostCategory>
-
-        {/* 2. Failed & Missed Captures */}
-        <CostCategory name="Failed & Missed Captures" cost={r.missedCaptureCost} barColor="red" maxCost={maxCost}>
-          Your capture fleet has an estimated <strong className="text-[#424242]">{(r.failRate * 100).toFixed(0)}%</strong> failure rate.
-          Of <strong className="text-[#424242]">{r.totalLectures.toLocaleString()}</strong> scheduled captures/year,
-          roughly <strong className="text-[#424242]">{r.missedLectures.toLocaleString()}</strong> fail or produce unusable recordings
-          — affecting an estimated <strong className="text-[#424242]">{r.studentsAffected.toLocaleString()}</strong> student-views.
-          Each incident costs approximately <strong className="text-[#424242]">$250</strong> in rescheduling, re-recording, and complaint handling.
-          <br />
-          <em>Reference: NC State achieved 99%+ capture reliability with Pearl fleet. NTNU runs 700 rooms with zero dedicated operators and near-zero failure rate.</em>
-        </CostCategory>
-
-        {/* 3. Classroom Downtime */}
-        <CostCategory name="Classroom Downtime" cost={r.downtimeCost} barColor="amber" maxCost={maxCost}>
-          Each AV failure that disrupts a class session costs approximately <strong className="text-[#424242]">$2,000</strong> (instructor time + student time + rescheduling).
-          Aging rooms average <strong className="text-[#424242]">{r.downtimeEventsPerRoom.toFixed(1)}</strong> disruptive failures/room/year
-          vs. &lt;0.5 for cloud-managed systems.
-          That&apos;s <strong className="text-[#424242]">{r.totalDowntimeEvents.toLocaleString()}</strong> disrupted class sessions across your campus annually.
-          <br />
-          <em>Source: eCampus News / Cenero downtime cost methodology</em>
         </CostCategory>
 
         {/* 4. Manual Operation Burden */}
@@ -69,6 +58,50 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
           <em>Source: REMI Group equipment lifecycle analysis, Epiphan TCO model. Reference: Dartmouth OpenAV saved $1.6M vs. commercial integrators across 140 classrooms.</em>
         </CostCategory>
 
+        {/* ── Tier 2: Productivity Impact ───────────────────────────── */}
+        <div className="px-5 pt-4 pb-2 bg-[#f8f9fa] border-b border-[#eeeeee]">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#1a2332]">
+            Campus Productivity Impact
+          </div>
+          <div className="text-[11px] text-[#757575] mt-0.5">
+            Measured losses from unreliable systems — real events, estimated dollar values
+          </div>
+        </div>
+
+        {/* 2. Failed & Missed Captures */}
+        <CostCategory name="Failed & Missed Captures" cost={r.missedCaptureCost} barColor="red" maxCost={maxCost}>
+          Your capture fleet has an estimated <strong className="text-[#424242]">{(r.failRate * 100).toFixed(0)}%</strong> failure rate
+          across the <strong className="text-[#424242]">70%</strong> of rooms with active recording schedules.
+          Of <strong className="text-[#424242]">{r.totalLectures.toLocaleString()}</strong> scheduled captures/year,
+          roughly <strong className="text-[#424242]">{r.missedLectures.toLocaleString()}</strong> fail or produce unusable recordings
+          — affecting an estimated <strong className="text-[#424242]">{r.studentsAffected.toLocaleString()}</strong> student-views.
+          Each incident costs approximately <strong className="text-[#424242]">$150</strong> in IT investigation, instructor coordination, and complaint handling.
+          <br />
+          <em>Reference: NC State achieved 99%+ capture reliability with Pearl fleet. NTNU runs 700 rooms with zero dedicated operators and near-zero failure rate.</em>
+        </CostCategory>
+
+        {/* 3. Classroom Downtime */}
+        <CostCategory name="Classroom Downtime" cost={r.downtimeCost} barColor="amber" maxCost={maxCost}>
+          Each AV failure that disrupts a class session costs an estimated <strong className="text-[#424242]">$500</strong> — a blended average
+          of minor incidents (reboot/cable swap, ~$100) and major hardware failures (~$2,000+).
+          IT dispatch (1.5hr × $55), instructor time, rescheduling, and parts/consumables drive the base cost.
+          Aging rooms average <strong className="text-[#424242]">{r.downtimeEventsPerRoom.toFixed(1)}</strong> disruptive failures/room/year
+          vs. &lt;0.5 for cloud-managed systems.
+          That&apos;s <strong className="text-[#424242]">{r.totalDowntimeEvents.toLocaleString()}</strong> disrupted class sessions across your campus annually.
+          <br />
+          <em>Blended cost methodology: IT dispatch + instructor time + rescheduling + parts/consumables.</em>
+        </CostCategory>
+
+        {/* ── Tier 3: Institutional Risk ────────────────────────────── */}
+        <div className="px-5 pt-4 pb-2 bg-[#f8f9fa] border-b border-[#eeeeee]">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#1a2332]">
+            Institutional Risk Exposure
+          </div>
+          <div className="text-[11px] text-[#757575] mt-0.5">
+            Compliance liability and at-risk revenue — not yet realized, but quantifiable
+          </div>
+        </div>
+
         {/* 6. ADA Compliance Exposure */}
         <CostCategory name="ADA / Accessibility Compliance Exposure" cost={r.adaCost} barColor="red" maxCost={maxCost}>
           <strong className="text-[#424242]">April 24, 2026 deadline</strong>: Public entities must meet WCAG 2.1 Level AA for all digital content — including lecture recordings.{" "}
@@ -79,14 +112,14 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
           <em>Source: AGB Policy Alert, 3Play Media, AudioEye compliance database</em>
         </CostCategory>
 
-        {/* 7. Student Retention Impact */}
-        <CostCategory name="Student Retention Impact" cost={r.retentionCost} barColor="blue" maxCost={maxCost}>
+        {/* 7. Student Retention — At-Risk Revenue */}
+        <CostCategory name="Student Retention — At-Risk Revenue" cost={r.retentionCost} barColor="blue" maxCost={maxCost}>
           <strong className="text-[#424242]">70% of in-person</strong> and <strong className="text-[#424242]">79% of online</strong> students say classroom technology impacts their learning decisions.
           Research shows lecture capture access reduces attrition from <strong className="text-[#424242]">12.3% to 5%</strong>.
           Students retain <strong className="text-[#424242]">25–30% more content</strong> with instructor + slides video vs. audio-only or no recording.
-          Even a conservative <strong className="text-[#424242]">{(r.retentionPercent * 100).toFixed(1)}%</strong> retention improvement
-          on <strong className="text-[#424242]">{inputs.students.toLocaleString()}</strong> students
-          at $<strong className="text-[#424242]">{inputs.tuition.toLocaleString()}</strong> tuition = significant revenue recovery.
+          A conservative <strong className="text-[#424242]">{(r.retentionPercent * 100).toFixed(2)}%</strong> of students
+          whose experience was degraded enough to contribute to their decision to leave
+          represents <strong className="text-[#424242]">{formatCurrency(r.retentionCost)}</strong> in at-risk tuition revenue.
           <br />
           <em>Source: Springer Higher Education research, Collegis Education</em>
         </CostCategory>

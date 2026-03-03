@@ -48,8 +48,6 @@ export default function Home() {
             <MetricsRow
               hoursReclaimed={results.hoursReclaimed}
               missedLectures={results.missedLectures}
-              currentRoomsPerPerson={results.currentRoomsPerPerson}
-              paybackMonths={results.paybackMonths}
             />
             <CostBreakdown inputs={inputs} results={results} />
             <SolutionRow inputs={inputs} results={results} />

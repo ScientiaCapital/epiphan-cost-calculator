@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { calculate, formatCurrency, formatCompact, type CalculatorInputs } from "@/lib/calculator";
 import { DEFAULT_INPUTS, SCENARIOS } from "@/lib/constants";
 
-// Helper: run calculator with default Large scenario (300 rooms, age 5)
+// Helper: run calculator with default Mid-Size scenario (150 rooms, age 5)
 function defaultResult() {
   return calculate(DEFAULT_INPUTS);
 }
@@ -13,94 +13,101 @@ function calcWith(overrides: Partial<CalculatorInputs>) {
 }
 
 describe("calculate()", () => {
-  describe("Large scenario (300 rooms, 5-year equipment)", () => {
+  describe("Mid-Size scenario (150 rooms, 5-year equipment)", () => {
     const r = defaultResult();
 
     it("computes total lectures correctly", () => {
-      // 300 rooms × 15 lectures/week × 30 weeks = 135,000
-      expect(r.totalLectures).toBe(135000);
+      // 150 rooms × 15 lectures/week × 30 weeks = 67,500
+      expect(r.totalLectures).toBe(67500);
     });
 
     it("computes ticket costs (category 1)", () => {
       // ticketRate = 4.6 × 1.0 = 4.6/room/yr
       expect(r.ticketsPerRoomYear).toBeCloseTo(4.6, 1);
-      // totalTickets = round(300 × 4.6) = 1380
-      expect(r.totalTickets).toBe(1380);
-      // ticketHours = round(1380 × 45 / 60) = 1035
-      expect(r.ticketHours).toBe(1035);
-      // ticketCost = 1380 × $35 = $48,300
-      expect(r.ticketCost).toBe(48300);
+      // totalTickets = round(150 × 4.6) = 690
+      expect(r.totalTickets).toBe(690);
+      // ticketHours = round(690 × 45 / 60) = 518
+      expect(r.ticketHours).toBe(518);
+      // ticketCost = 690 × $35 = $24,150
+      expect(r.ticketCost).toBe(24150);
     });
 
     it("computes failed capture costs (category 2)", () => {
       // failRate = 0.06 for age 5
       expect(r.failRate).toBe(0.06);
-      // missed = round(135000 × 0.06) = 8100
-      expect(r.missedLectures).toBe(8100);
-      // studentsAffected = 8100 × 75 = 607,500
-      expect(r.studentsAffected).toBe(607500);
-      // missedCaptureCost = 8100 × $250 = $2,025,000
-      expect(r.missedCaptureCost).toBe(2025000);
+      // missed = round(67500 × 0.70 × 0.06) = 2835
+      expect(r.missedLectures).toBe(2835);
+      // studentsAffected = 2835 × 75 = 212,625
+      expect(r.studentsAffected).toBe(212625);
+      // missedCaptureCost = 2835 × $150 = $425,250
+      expect(r.missedCaptureCost).toBe(425250);
     });
 
     it("computes classroom downtime costs (category 3)", () => {
       // downtimePerRoom = 2.5 for age 5
       expect(r.downtimeEventsPerRoom).toBe(2.5);
-      // totalEvents = round(300 × 2.5) = 750
-      expect(r.totalDowntimeEvents).toBe(750);
-      // cost = 750 × $2000 = $1,500,000
-      expect(r.downtimeCost).toBe(1500000);
+      // totalEvents = round(150 × 2.5) = 375
+      expect(r.totalDowntimeEvents).toBe(375);
+      // cost = 375 × $500 = $187,500
+      expect(r.downtimeCost).toBe(187500);
     });
 
     it("computes staff redeployment costs (category 4)", () => {
-      // curRoomsPerPerson = round(300 / 6) = 50
-      expect(r.currentRoomsPerPerson).toBe(50);
-      // optimalFTE = ceil(300 / 100) = 3
-      expect(r.optimalFTE).toBe(3);
-      // excessFTE = 6 - 3 = 3
-      expect(r.excessFTE).toBe(3);
-      // staffCost = 3 × $90,000 = $270,000
-      expect(r.staffCost).toBe(270000);
+      // curRoomsPerPerson = round(150 / 4) = 38
+      expect(r.currentRoomsPerPerson).toBe(38);
+      // optimalFTE = ceil(150 / 100) = 2
+      expect(r.optimalFTE).toBe(2);
+      // excessFTE = 4 - 2 = 2
+      expect(r.excessFTE).toBe(2);
+      // staffCost = 2 × $85,000 = $170,000
+      expect(r.staffCost).toBe(170000);
     });
 
     it("computes maintenance costs (category 5)", () => {
       // configHrs = 2.5 for age 5
       expect(r.configHoursPerRoom).toBe(2.5);
-      // configLabor = 300 × 2.5 × $55 = $41,250
-      // parts = 300 × $150 = $45,000
-      // total = $86,250
-      expect(r.maintenanceCost).toBe(86250);
+      // configLabor = 150 × 2.5 × $55 = $20,625
+      // parts = 150 × $150 = $22,500
+      // total = $43,125
+      expect(r.maintenanceCost).toBe(43125);
     });
 
     it("computes ADA compliance costs (category 6)", () => {
-      // adaCost = max(25000, 300 × 200) = max(25000, 60000) = $60,000
-      expect(r.adaCost).toBe(60000);
+      // adaCost = max(25000, 150 × 200) = max(25000, 30000) = $30,000
+      expect(r.adaCost).toBe(30000);
     });
 
     it("computes retention costs (category 7)", () => {
-      // retPct = 0.005 for age 5
-      expect(r.retentionPercent).toBe(0.005);
-      // retentionCost = 25000 × 0.005 × $18,000 = $2,250,000
-      expect(r.retentionCost).toBe(2250000);
+      // retPct = 0.0025 for age 5
+      expect(r.retentionPercent).toBe(0.0025);
+      // retentionCost = 12000 × 0.0025 × $22,000 = $660,000
+      expect(r.retentionCost).toBe(660000);
     });
 
     it("computes annual and 3-year totals", () => {
-      const expectedAnnual = 48300 + 2025000 + 1500000 + 270000 + 86250 + 60000 + 2250000;
-      expect(r.annualCost).toBe(expectedAnnual);
+      const expectedAnnual = 24150 + 425250 + 187500 + 170000 + 43125 + 30000 + 660000;
+      expect(r.annualCost).toBe(expectedAnnual); // $1,540,025
       expect(r.threeYearCost).toBe(expectedAnnual * 3.15);
     });
 
     it("computes hours reclaimed", () => {
-      // ticketHours (1035) + round(300 × 2.5) = 1035 + 750 = 1785
-      expect(r.hoursReclaimed).toBe(1785);
+      // ticketHours (518) + round(150 × 2.5) = 518 + 375 = 893
+      expect(r.hoursReclaimed).toBe(893);
     });
 
-    it("computes investment and ROI", () => {
-      // totalInvestment = 300 × $5,198 = $1,559,400
-      expect(r.totalInvestment).toBe(1559400);
-      // paybackMonths = round(($1,559,400 / annual) × 12) clamped 1–36
-      const expectedPayback = Math.min(36, Math.max(1, Math.round((1559400 / r.annualCost) * 12)));
+    it("computes blended room mix for 150 rooms", () => {
+      // Mid-size mix: nano=30, nexus=38, pearl2=8, nexusEc20=74
+      expect(r.roomMix).toEqual({ nano: 30, nexus: 38, nexusEc20: 74, pearl2: 8 });
+      // Investment: 30×1999 + 38×3299 + 74×5198 + 8×7999 = $633,976
+      expect(r.totalInvestment).toBe(633976);
+      expect(r.blendedPerRoom).toBe(Math.round(633976 / 150));
+    });
+
+    it("computes payback and ROI with blended investment", () => {
+      // paybackMonths = round(($633,976 / $1,540,025) × 12) = 5
+      const expectedPayback = Math.min(36, Math.max(1, Math.round((633976 / r.annualCost) * 12)));
       expect(r.paybackMonths).toBe(expectedPayback);
+      expect(r.paybackMonths).toBe(5);
     });
 
     it("returns 7 cost categories", () => {
@@ -108,41 +115,48 @@ describe("calculate()", () => {
     });
   });
 
-  describe("Small scenario (50 rooms)", () => {
-    const s = SCENARIOS[0]; // Small: 50 rooms, 5yr
+  describe("Department scenario (10 rooms, 7-year equipment)", () => {
+    const s = SCENARIOS[0]; // Department: 10 rooms, 7yr
     const r = calculate({
       rooms: s.rooms,
       equipmentAge: s.equipmentAge,
-      lecturesPerWeek: 15,
-      teachWeeks: 30,
+      lecturesPerWeek: s.lecturesPerWeek,
+      teachWeeks: s.teachWeeks,
       students: s.students,
       tuition: s.tuition,
       currentFTE: s.currentFTE,
-      itSalary: 90000,
+      itSalary: s.itSalary,
     });
 
-    it("computes ticket costs for 50 rooms at age 5", () => {
-      expect(r.totalTickets).toBe(Math.round(50 * 4.6));
-      expect(r.ticketCost).toBe(Math.round(50 * 4.6) * 35);
+    it("computes ticket costs for 10 rooms at age 7", () => {
+      expect(r.totalTickets).toBe(Math.round(10 * 4.6 * 1.8));
+      expect(r.ticketCost).toBe(Math.round(10 * 4.6 * 1.8) * 35);
     });
 
-    it("ADA minimum floor applies for small campus", () => {
-      // 50 × 200 = 10,000 < 25,000 minimum
+    it("ADA minimum floor applies for small deployment", () => {
+      // 10 × 400 = 4,000 < 25,000 minimum
       expect(r.adaCost).toBe(25000);
+    });
+
+    it("uses small-deployment room mix (≤25 rooms)", () => {
+      // 10 rooms: nexus=round(10×0.70)=7, nexusEc20=3
+      expect(r.roomMix).toEqual({ nano: 0, nexus: 7, nexusEc20: 3, pearl2: 0 });
+      // Investment: 7×3299 + 3×5198 = 23,093 + 15,594 = $38,687
+      expect(r.totalInvestment).toBe(38687);
     });
   });
 
-  describe("Major scenario (600 rooms, 7-year equipment)", () => {
-    const s = SCENARIOS[3]; // Major: 600 rooms, 7yr
+  describe("Large University scenario (500 rooms, 7-year equipment)", () => {
+    const s = SCENARIOS[3]; // Large University: 500 rooms, 7yr
     const r = calculate({
       rooms: s.rooms,
       equipmentAge: s.equipmentAge,
-      lecturesPerWeek: 15,
-      teachWeeks: 30,
+      lecturesPerWeek: s.lecturesPerWeek,
+      teachWeeks: s.teachWeeks,
       students: s.students,
       tuition: s.tuition,
       currentFTE: s.currentFTE,
-      itSalary: 90000,
+      itSalary: s.itSalary,
     });
 
     it("uses age-7 multipliers", () => {
@@ -153,10 +167,18 @@ describe("calculate()", () => {
 
     it("computes higher costs for aging equipment", () => {
       const defaultR = defaultResult();
-      // 600 rooms at age 7 should cost more per room than 300 at age 5
+      // 500 rooms at age 7 should cost more per category than 150 at age 5
       expect(r.annualCost / r.categories.length).toBeGreaterThan(
         defaultR.annualCost / defaultR.categories.length
       );
+    });
+
+    it("uses large-deployment room mix (>200 rooms)", () => {
+      // 500 rooms: nano=125, nexus=75, pearl2=50, nexusEc20=250
+      expect(r.roomMix).toEqual({ nano: 125, nexus: 75, nexusEc20: 250, pearl2: 50 });
+      // Investment: 125×1999 + 75×3299 + 250×5198 + 50×7999
+      const expected = 125*1999 + 75*3299 + 250*5198 + 50*7999;
+      expect(r.totalInvestment).toBe(expected);
     });
   });
 
@@ -166,6 +188,27 @@ describe("calculate()", () => {
       expect(r.annualCost).toBeGreaterThan(0);
       expect(r.optimalFTE).toBe(1);
       expect(r.excessFTE).toBe(0);
+      // 1 room: nexus=round(0.70)=1, nexusEc20=0
+      expect(r.roomMix).toEqual({ nano: 0, nexus: 1, nexusEc20: 0, pearl2: 0 });
+    });
+
+    it("handles boundary at 25 rooms (small tier)", () => {
+      const r = calcWith({ rooms: 25, currentFTE: 1 });
+      // nexus=round(25×0.70)=18, nexusEc20=7
+      expect(r.roomMix).toEqual({ nano: 0, nexus: 18, nexusEc20: 7, pearl2: 0 });
+      expect(r.totalInvestment).toBe(18*3299 + 7*5198);
+    });
+
+    it("handles boundary at 200 rooms (mid tier)", () => {
+      const r = calcWith({ rooms: 200, currentFTE: 4 });
+      // nano=40, nexus=50, pearl2=10, nexusEc20=100
+      expect(r.roomMix).toEqual({ nano: 40, nexus: 50, nexusEc20: 100, pearl2: 10 });
+    });
+
+    it("handles 201 rooms (large tier)", () => {
+      const r = calcWith({ rooms: 201, currentFTE: 4 });
+      // nano=round(201×0.25)=50, nexus=round(201×0.15)=30, pearl2=round(201×0.10)=20, nexusEc20=101
+      expect(r.roomMix).toEqual({ nano: 50, nexus: 30, nexusEc20: 101, pearl2: 20 });
     });
 
     it("handles age 10 (critical)", () => {

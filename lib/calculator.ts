@@ -1,10 +1,12 @@
 import {
   type EquipmentAge,
+  type RoomMix,
   TICKET_BASE_RATE,
   TICKET_AGE_MULTIPLIER,
   COST_PER_TICKET,
   MINUTES_PER_TICKET,
   FAIL_RATES,
+  RECORDING_UTILIZATION,
   COST_PER_MISSED_CAPTURE,
   STUDENTS_PER_LECTURE,
   DOWNTIME_EVENTS_PER_ROOM,
@@ -16,8 +18,9 @@ import {
   ADA_MINIMUM_COST,
   RETENTION_PCT_BY_AGE,
   OPTIMAL_ROOMS_PER_PERSON,
-  PER_ROOM_INVESTMENT,
   THREE_YEAR_MULTIPLIER,
+  getRoomMix,
+  getInvestmentFromMix,
 } from "./constants";
 
 // ── Input / Output Types ──────────────────────────────────────────────
@@ -84,6 +87,8 @@ export interface CalculatorResults {
 
   // Solution / metrics
   hoursReclaimed: number;
+  roomMix: RoomMix;
+  blendedPerRoom: number;
   totalInvestment: number;
   paybackMonths: number;
   roi3Year: number;
@@ -102,9 +107,9 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   const ticketHours = Math.round(totalTickets * MINUTES_PER_TICKET / 60);
   const ticketCost = totalTickets * COST_PER_TICKET;
 
-  // 2. Failed & Missed Captures
+  // 2. Failed & Missed Captures (only rooms with active recording schedules)
   const failRate = FAIL_RATES[equipmentAge];
-  const missedLectures = Math.round(totalLectures * failRate);
+  const missedLectures = Math.round(totalLectures * RECORDING_UTILIZATION * failRate);
   const studentsAffected = missedLectures * STUDENTS_PER_LECTURE;
   const missedCaptureCost = missedLectures * COST_PER_MISSED_CAPTURE;
 
@@ -128,7 +133,7 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   // 6. ADA Compliance Exposure
   const adaCost = Math.max(ADA_MINIMUM_COST, rooms * ADA_COST_PER_ROOM[equipmentAge]);
 
-  // 7. Student Retention Impact
+  // 7. Student Retention — At-Risk Revenue
   const retentionPercent = RETENTION_PCT_BY_AGE[equipmentAge];
   const retentionCost = students * retentionPercent * tuition;
 
@@ -139,20 +144,25 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   // Hours reclaimed = ticket handling hours + config labor hours
   const hoursReclaimed = ticketHours + Math.round(rooms * configHoursPerRoom);
 
-  // Investment & ROI
-  const totalInvestment = rooms * PER_ROOM_INVESTMENT;
+  // Investment & ROI — use blended room mix
+  const roomMix = getRoomMix(rooms);
+  const totalInvestment = getInvestmentFromMix(roomMix);
+  const blendedPerRoom = Math.round(totalInvestment / rooms);
   const paybackMonths = Math.min(36, Math.max(1, Math.round((totalInvestment / annualCost) * 12)));
   const roi3Year = Math.round(((threeYearCost - totalInvestment) / totalInvestment) * 100);
 
-  // Category breakdown for rendering
+  // Category breakdown for rendering — ordered by credibility tier
+  // Tier 1: Operational (hard budget costs)
+  // Tier 2: Productivity (measured losses)
+  // Tier 3: Institutional Risk (compliance & retention)
   const categories: CategoryCost[] = [
     { name: "IT Staff Time Wasted", cost: ticketCost, barColor: "red" },
-    { name: "Failed & Missed Captures", cost: missedCaptureCost, barColor: "red" },
-    { name: "Classroom Downtime", cost: downtimeCost, barColor: "amber" },
     { name: "Manual Operation Burden", cost: staffCost, barColor: "amber" },
     { name: "Configuration & Maintenance Labor", cost: maintenanceCost, barColor: "blue" },
+    { name: "Failed & Missed Captures", cost: missedCaptureCost, barColor: "red" },
+    { name: "Classroom Downtime", cost: downtimeCost, barColor: "amber" },
     { name: "ADA / Accessibility Compliance Exposure", cost: adaCost, barColor: "red" },
-    { name: "Student Retention Impact", cost: retentionCost, barColor: "blue" },
+    { name: "Student Retention — At-Risk Revenue", cost: retentionCost, barColor: "blue" },
   ];
 
   return {
@@ -181,6 +191,8 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
     configHoursPerRoom,
     retentionPercent,
     hoursReclaimed,
+    roomMix,
+    blendedPerRoom,
     totalInvestment,
     paybackMonths,
     roi3Year,

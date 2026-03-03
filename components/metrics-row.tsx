@@ -3,25 +3,19 @@ import { formatCompact } from "@/lib/calculator";
 interface MetricsRowProps {
   hoursReclaimed: number;
   missedLectures: number;
-  currentRoomsPerPerson: number;
-  paybackMonths: number;
 }
 
 export function MetricsRow({
   hoursReclaimed,
   missedLectures,
-  currentRoomsPerPerson,
-  paybackMonths,
 }: MetricsRowProps) {
   const metrics = [
-    { value: formatCompact(hoursReclaimed), label: "Hours Reclaimed / Year" },
-    { value: formatCompact(missedLectures), label: "Lectures Saved / Year" },
-    { value: `${currentRoomsPerPerson} → 100+`, label: "Rooms / Staff Member" },
-    { value: `${paybackMonths} mo`, label: "Payback Period" },
+    { value: formatCompact(hoursReclaimed), label: "IT Hours Saved / Year" },
+    { value: formatCompact(missedLectures), label: "Failed Recordings Prevented" },
   ];
 
   return (
-    <div className="grid grid-cols-4 max-sm:grid-cols-2 gap-3 mb-5">
+    <div className="grid grid-cols-2 gap-3 mb-5">
       {metrics.map((m) => (
         <div
           key={m.label}
