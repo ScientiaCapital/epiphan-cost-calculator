@@ -172,6 +172,25 @@ const s = StyleSheet.create({
     marginTop: 3,
     textAlign: "center",
   },
+  // Advanced inputs
+  advancedRow: {
+    flexDirection: "row",
+    borderBottom: "1px solid #e0e0e0",
+    paddingVertical: 3,
+  },
+  advancedLabel: {
+    width: "55%",
+    paddingLeft: 6,
+    fontSize: 9,
+    color: GRAY,
+  },
+  advancedValue: {
+    width: "45%",
+    textAlign: "right",
+    paddingRight: 6,
+    fontSize: 9,
+    color: GRAY,
+  },
   // Footer
   footer: {
     position: "absolute",
@@ -221,22 +240,32 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
           <Text style={s.brand}>Epiphan Video</Text>
         </View>
 
-        {/* 2. Campus Profile */}
+        {/* 2. Campus Profile — primary inputs */}
         <Text style={s.sectionHeader}>Campus Profile</Text>
         <View>
           {[
-            ["Lecture-Capture Rooms", String(inputs.rooms)],
+            ["AV-Equipped Rooms", String(inputs.rooms)],
             ["Equipment Age", getAgeLabel(inputs.equipmentAge)],
-            ["Lectures per Room / Week", String(inputs.lecturesPerWeek)],
-            ["Teaching Weeks / Year", String(inputs.teachWeeks)],
-            ["Enrolled Students", inputs.students.toLocaleString("en-US")],
-            ["Average Tuition", formatCurrency(inputs.tuition)],
-            ["IT Staff Salary (avg)", formatCurrency(inputs.itSalary)],
             ["Current AV Support FTEs", String(inputs.currentFTE)],
           ].map(([label, value], i) => (
             <View key={i} style={i % 2 === 0 ? s.tableRow : s.tableRowAlt}>
               <Text style={s.tableLabel}>{label}</Text>
               <Text style={s.tableValue}>{value}</Text>
+            </View>
+          ))}
+        </View>
+        {/* Advanced inputs — smaller text */}
+        <View style={{ marginTop: 4 }}>
+          {[
+            ["Recordings per Room / Week", String(inputs.lecturesPerWeek)],
+            ["Teaching Weeks / Year", String(inputs.teachWeeks)],
+            ["Average Tuition", formatCurrency(inputs.tuition)],
+            ["Enrolled Students", inputs.students.toLocaleString("en-US")],
+            ["IT Staff Salary (avg)", formatCurrency(inputs.itSalary)],
+          ].map(([label, value], i) => (
+            <View key={i} style={s.advancedRow}>
+              <Text style={s.advancedLabel}>{label}</Text>
+              <Text style={s.advancedValue}>{value}</Text>
             </View>
           ))}
         </View>
@@ -258,22 +287,35 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
           </View>
         </View>
 
-        {/* 4. Cost Breakdown */}
+        {/* 4. Cost Breakdown — grouped by credibility tier */}
         <Text style={s.sectionHeader}>Cost Breakdown</Text>
         <View>
-          {results.categories.map((cat, i) => (
-            <View
-              key={i}
-              style={[
-                s.breakdownRow,
-                i % 2 !== 0 ? { backgroundColor: LIGHT_GRAY } : {},
-              ]}
-            >
-              <Text style={s.breakdownName}>{cat.name}</Text>
-              <Text style={s.breakdownCost}>{formatCurrency(cat.cost)}</Text>
-              <Text style={s.breakdownPct}>
-                {pct(cat.cost, results.annualCost)}
-              </Text>
+          {[
+            { label: "Operational Costs", start: 0, end: 3 },
+            { label: "Productivity Impact", start: 3, end: 5 },
+            { label: "Institutional Risk", start: 5, end: 7 },
+          ].map((tier) => (
+            <View key={tier.label}>
+              <View style={{ backgroundColor: "#e8eaed", paddingVertical: 3, paddingHorizontal: 6, marginTop: tier.start > 0 ? 6 : 0 }}>
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: NAVY, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  {tier.label}
+                </Text>
+              </View>
+              {results.categories.slice(tier.start, tier.end).map((cat, i) => (
+                <View
+                  key={cat.name}
+                  style={[
+                    s.breakdownRow,
+                    i % 2 !== 0 ? { backgroundColor: LIGHT_GRAY } : {},
+                  ]}
+                >
+                  <Text style={s.breakdownName}>{cat.name}</Text>
+                  <Text style={s.breakdownCost}>{formatCurrency(cat.cost)}</Text>
+                  <Text style={s.breakdownPct}>
+                    {pct(cat.cost, results.annualCost)}
+                  </Text>
+                </View>
+              ))}
             </View>
           ))}
         </View>
@@ -285,26 +327,20 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
             <Text style={s.metricValue}>
               {results.hoursReclaimed.toLocaleString("en-US")}
             </Text>
-            <Text style={s.metricLabel}>IT Hours Reclaimed / Year</Text>
+            <Text style={s.metricLabel}>IT Hours Saved / Year</Text>
           </View>
           <View style={s.metricCard}>
             <Text style={s.metricValue}>
               {results.missedLectures.toLocaleString("en-US")}
             </Text>
-            <Text style={s.metricLabel}>Missed Lectures / Year</Text>
-          </View>
-          <View style={s.metricCard}>
-            <Text style={s.metricValue}>{results.currentRoomsPerPerson}</Text>
-            <Text style={s.metricLabel}>Rooms per FTE</Text>
-          </View>
-          <View style={s.metricCard}>
-            <Text style={s.metricValue}>{results.paybackMonths} mo</Text>
-            <Text style={s.metricLabel}>Payback Period</Text>
+            <Text style={s.metricLabel}>Failed Recordings Prevented</Text>
           </View>
         </View>
 
         {/* 6. Solution ROI */}
-        <Text style={s.sectionHeader}>Solution ROI</Text>
+        <Text style={s.sectionHeader}>
+          Solution ROI — Blended Room Mix ({formatCurrency(results.blendedPerRoom)}/room avg)
+        </Text>
         <View style={s.roiRow}>
           <View style={[s.roiCard, { backgroundColor: LIGHT_GRAY }]}>
             <Text style={[s.roiValue, { color: NAVY }]}>

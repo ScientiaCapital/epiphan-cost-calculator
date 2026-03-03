@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { CalculatorInputs } from "@/lib/calculator";
 import type { EquipmentAge } from "@/lib/constants";
 import { EQUIPMENT_AGE_OPTIONS } from "@/lib/constants";
@@ -30,6 +31,8 @@ function Field({
 }
 
 export function InputPanel({ inputs, onChange }: InputPanelProps) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   function update<K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) {
     onChange({ ...inputs, [key]: value });
   }
@@ -51,7 +54,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               value={inputs.rooms}
               min={1}
               max={5000}
-              onChange={(e) => update("rooms", parseInt(e.target.value) || 300)}
+              onChange={(e) => update("rooms", parseInt(e.target.value) || 150)}
             />
           </Field>
 
@@ -69,68 +72,6 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
             </select>
           </Field>
 
-          <div className="border-t border-[#eeeeee] my-4" />
-
-          <Field label="Lectures per Room / Week" hint="Avg scheduled recordings/streams">
-            <input
-              type="number"
-              className={inputClass}
-              value={inputs.lecturesPerWeek}
-              min={1}
-              max={50}
-              onChange={(e) => update("lecturesPerWeek", parseInt(e.target.value) || 15)}
-            />
-          </Field>
-
-          <Field label="Teaching Weeks / Year">
-            <input
-              type="number"
-              className={inputClass}
-              value={inputs.teachWeeks}
-              min={20}
-              max={52}
-              onChange={(e) => update("teachWeeks", parseInt(e.target.value) || 30)}
-            />
-          </Field>
-
-          <Field label="Enrolled Students">
-            <input
-              type="number"
-              className={inputClass}
-              value={inputs.students}
-              min={500}
-              max={100000}
-              step={500}
-              onChange={(e) => update("students", parseInt(e.target.value) || 25000)}
-            />
-          </Field>
-
-          <Field label="Avg Annual Tuition ($)">
-            <input
-              type="number"
-              className={inputClass}
-              value={inputs.tuition}
-              min={1000}
-              max={80000}
-              step={500}
-              onChange={(e) => update("tuition", parseInt(e.target.value) || 18000)}
-            />
-          </Field>
-
-          <div className="border-t border-[#eeeeee] my-4" />
-
-          <Field label="IT Staff Salary (avg)">
-            <input
-              type="number"
-              className={inputClass}
-              value={inputs.itSalary}
-              min={40000}
-              max={200000}
-              step={5000}
-              onChange={(e) => update("itSalary", parseInt(e.target.value) || 90000)}
-            />
-          </Field>
-
           <Field label="Current AV / Media Staff (FTEs)" hint="Industry avg: 47 rooms per person">
             <input
               type="number"
@@ -138,9 +79,81 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
               value={inputs.currentFTE}
               min={1}
               max={50}
-              onChange={(e) => update("currentFTE", parseInt(e.target.value) || 6)}
+              onChange={(e) => update("currentFTE", parseInt(e.target.value) || 4)}
             />
           </Field>
+
+          <div className="border-t border-[#eeeeee] my-4" />
+
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="text-[13px] font-semibold text-[#7ab800] hover:text-[#5a8a00] transition-colors cursor-pointer mb-3"
+          >
+            {showAdvanced ? "Hide Advanced \u25B4" : "Advanced Settings \u25BE"}
+          </button>
+
+          {showAdvanced && (
+            <>
+              <Field label="Recordings per Room / Week" hint="Avg scheduled recordings/streams">
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.lecturesPerWeek}
+                  min={1}
+                  max={50}
+                  onChange={(e) => update("lecturesPerWeek", parseInt(e.target.value) || 15)}
+                />
+              </Field>
+
+              <Field label="Teaching Weeks / Year">
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.teachWeeks}
+                  min={20}
+                  max={52}
+                  onChange={(e) => update("teachWeeks", parseInt(e.target.value) || 30)}
+                />
+              </Field>
+
+              <Field label="Avg Annual Tuition ($)">
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.tuition}
+                  min={1000}
+                  max={80000}
+                  step={500}
+                  onChange={(e) => update("tuition", parseInt(e.target.value) || 22000)}
+                />
+              </Field>
+
+              <Field label="Enrolled Students">
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.students}
+                  min={500}
+                  max={100000}
+                  step={500}
+                  onChange={(e) => update("students", parseInt(e.target.value) || 12000)}
+                />
+              </Field>
+
+              <Field label="IT Staff Salary (avg)">
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.itSalary}
+                  min={40000}
+                  max={200000}
+                  step={5000}
+                  onChange={(e) => update("itSalary", parseInt(e.target.value) || 85000)}
+                />
+              </Field>
+            </>
+          )}
         </div>
       </div>
     </div>

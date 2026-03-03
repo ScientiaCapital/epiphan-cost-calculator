@@ -16,16 +16,19 @@ export function ScenarioBar({ activeRooms, onSelect }: ScenarioBarProps) {
       tuition: s.tuition,
       currentFTE: s.currentFTE,
       equipmentAge: s.equipmentAge,
+      lecturesPerWeek: s.lecturesPerWeek,
+      teachWeeks: s.teachWeeks,
+      itSalary: s.itSalary,
     });
   }
 
   return (
-    <div className="flex gap-2 mb-4">
+    <div className="flex flex-wrap gap-2 mb-4">
       {SCENARIOS.map((s) => (
         <button
           key={s.rooms}
           onClick={() => handleClick(s)}
-          className={`flex-1 py-2 px-1 text-[11px] font-bold uppercase tracking-wide border-2 rounded-md bg-white cursor-pointer text-center transition-all ${
+          className={`flex-1 min-w-[100px] py-2 px-1 text-[11px] font-bold uppercase tracking-wide border-2 rounded-md bg-white cursor-pointer text-center transition-all ${
             activeRooms === s.rooms
               ? "border-[#7ab800] bg-[#f1f8e9] text-[#5a8a00]"
               : "border-[#e0e0e0] hover:border-[#7ab800]"
