@@ -22,3 +22,8 @@
 - TypeScript strict mode
 - App Router only — no Pages Router patterns
 - No client-side secrets; all sensitive config via environment variables server-side
+
+## Testing
+- Test suite: Vitest (38 tests in `__tests__/`)
+- Run: `npm test` or `npx vitest`
+- No `.env.local` required — this project has no LLM or external API dependencies
