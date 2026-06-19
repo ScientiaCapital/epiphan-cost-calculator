@@ -22,8 +22,8 @@ import {
   getRoomMix,
   getInvestmentFromMix,
   defaultConcurrentRooms,
-  getPooledEncoderCount,
-  getPooledInvestment,
+  getPooledPlan,
+  MIN_ROOMS_FOR_POOLED_PATH,
 } from "./constants";
 
 // ── Input / Output Types ──────────────────────────────────────────────
@@ -101,8 +101,10 @@ export interface CalculatorResults {
 
   // Centralized encoder pool (concurrency-based "more affordable path")
   concurrentRooms: number;
+  pooledModel: string;
   pooledEncoders: number;
   pooledInvestment: number;
+  showPooledPath: boolean;
 }
 
 // ── Calculator ────────────────────────────────────────────────────────
@@ -163,9 +165,11 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   const paybackMonths = Math.min(36, Math.max(1, Math.round((totalInvestment / annualCost) * 12)));
   const roi3Year = Math.round(((threeYearCost - totalInvestment) / totalInvestment) * 100);
 
-  // Centralized encoder pool — sized by concurrency, not room count
-  const pooledEncoders = getPooledEncoderCount(concurrentRooms);
-  const pooledInvestment = getPooledInvestment(concurrentRooms);
+  // Centralized encoder pool — sized by concurrency, not room count.
+  // Show the tease only for deployments large enough for pooling to make sense
+  // and where it genuinely beats the room-by-room investment.
+  const pooled = getPooledPlan(concurrentRooms);
+  const showPooledPath = rooms >= MIN_ROOMS_FOR_POOLED_PATH && pooled.investment < totalInvestment;
 
   // Category breakdown for rendering — ordered by credibility tier
   // Tier 1: Operational (hard budget costs)
@@ -213,8 +217,10 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
     paybackMonths,
     roi3Year,
     concurrentRooms,
-    pooledEncoders,
-    pooledInvestment,
+    pooledModel: pooled.model,
+    pooledEncoders: pooled.encoders,
+    pooledInvestment: pooled.investment,
+    showPooledPath,
   };
 }
 

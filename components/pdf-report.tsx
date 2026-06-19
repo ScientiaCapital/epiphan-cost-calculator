@@ -394,15 +394,18 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
         </View>
 
         {/* 6b. A more affordable path — concurrency-based starting point.
-            Soft tease only: a starting point for the budget conversation, not a quote. */}
+            Soft tease only: a starting point for the budget conversation, not a quote.
+            Hidden for deployments too small to benefit from a central pool. */}
+        {results.showPooledPath && (
         <View style={{ marginTop: 10, padding: 8, borderRadius: 4, border: `1px solid ${TEAL}` }}>
           <Text style={{ fontSize: 10, fontFamily: "Soehne-Bold", color: TEAL, marginBottom: 3 }}>
             A more affordable path: ~{formatCurrency(results.pooledInvestment)} centralized starting point
           </Text>
           <Text style={{ fontSize: 8, color: GRAY }}>
-            {`If only about ${results.concurrentRooms.toLocaleString("en-US")} of ${inputs.rooms.toLocaleString("en-US")} rooms ever record at the same time, a shared pool of ${results.pooledEncoders.toLocaleString("en-US")} central encoders can cover the campus — versus ${formatCurrency(results.totalInvestment)} room-by-room. This is a starting point for the conversation, not a quote; an Epiphan account engineer scopes the right design with you.`}
+            {`If only about ${results.concurrentRooms.toLocaleString("en-US")} of ${inputs.rooms.toLocaleString("en-US")} rooms ever record at the same time, a shared pool of ${results.pooledEncoders.toLocaleString("en-US")} ${results.pooledModel} encoders can cover the campus – versus ${formatCurrency(results.totalInvestment)} room-by-room. This is a starting point for the conversation, not a quote; an Epiphan account engineer scopes the right design with you.`}
           </Text>
         </View>
+        )}
 
         {/* 7. Footer */}
         <View style={s.footer}>

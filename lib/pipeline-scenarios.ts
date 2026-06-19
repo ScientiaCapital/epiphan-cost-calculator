@@ -103,7 +103,7 @@ export const PIPELINE_SCENARIOS: PipelineScenario[] = [
     rep: "[redacted-rep]",
     product: "Pearl Nano, Pearl Nexus",
     pain: "Aging homegrown lecture-capture system plus an unreliable studio deck; summer '26 budget cycle.",
-    roomsBasis: "Deal record: Summer '26, 90 rooms.",
+    roomsBasis: "Deal record: Summer '26, 90 rooms — full opportunity, not near-term scope (current evaluation is a single studio). Confirm scope before quoting.",
     rooms: 90, equipmentAge: "7", lecturesPerWeek: 15, teachWeeks: 30,
     students: 7200, tuition: 43000, itSalary: 80000, currentFTE: 3,
   },

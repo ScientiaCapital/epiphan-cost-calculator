@@ -4,10 +4,9 @@ import {
   DEFAULT_INPUTS,
   SCENARIOS,
   PRODUCT_PRICES,
-  NEXUS_FEEDS_PER_ENCODER,
   defaultConcurrentRooms,
-  getPooledEncoderCount,
-  getPooledInvestment,
+  getPooledPlan,
+  MIN_ROOMS_FOR_POOLED_PATH,
 } from "@/lib/constants";
 
 // Helper: run calculator with default Mid-Size scenario (150 rooms, age 5)
@@ -240,19 +239,20 @@ describe("calculate()", () => {
 });
 
 describe("centralized encoder pool (concurrency-based path)", () => {
-  it("Pearl Nexus captures 3 simultaneous feeds", () => {
-    expect(NEXUS_FEEDS_PER_ENCODER).toBe(3);
+  it("picks the cheapest central-encoder pool for the concurrency", () => {
+    // 9 concurrent: 5 Nexus ($19,995) vs 2 Pearl-2 ($17,998) → Pearl-2 wins
+    const plan = getPooledPlan(9);
+    expect(plan.model).toBe("Pearl-2");
+    expect(plan.encoders).toBe(2);
+    expect(plan.investment).toBe(2 * PRODUCT_PRICES.pearl2);
   });
 
-  it("sizes the encoder pool by concurrency, not room count", () => {
-    expect(getPooledEncoderCount(1)).toBe(1); // floor of 1 encoder
-    expect(getPooledEncoderCount(3)).toBe(1); // 3 feeds fit one encoder
-    expect(getPooledEncoderCount(4)).toBe(2); // spills into a second
-    expect(getPooledEncoderCount(9)).toBe(3);
-  });
-
-  it("prices the pool at the Nexus list price", () => {
-    expect(getPooledInvestment(9)).toBe(3 * PRODUCT_PRICES.nexus);
+  it("favors Pearl Nexus at low concurrency where Pearl-2 is overkill", () => {
+    // 8 concurrent: 4 Nexus ($15,996) vs 2 Pearl-2 ($17,998) → Nexus wins
+    const plan = getPooledPlan(8);
+    expect(plan.model).toBe("Pearl Nexus");
+    expect(plan.encoders).toBe(4);
+    expect(plan.investment).toBe(4 * PRODUCT_PRICES.nexus);
   });
 
   it("derives a conservative default concurrency when none is given", () => {
@@ -260,15 +260,18 @@ describe("centralized encoder pool (concurrency-based path)", () => {
     expect(defaultConcurrentRooms(150)).toBe(38);
     const r = calculate(DEFAULT_INPUTS);
     expect(r.concurrentRooms).toBe(38);
-    expect(r.pooledEncoders).toBe(13); // ceil(38 / 3)
-    expect(r.pooledInvestment).toBe(13 * PRODUCT_PRICES.nexus);
+    // 38 concurrent: 7 Pearl-2 ($62,993) beats 19 Nexus ($75,981)
+    expect(r.pooledModel).toBe("Pearl-2");
+    expect(r.pooledEncoders).toBe(7); // ceil(38 / 6)
+    expect(r.pooledInvestment).toBe(7 * PRODUCT_PRICES.pearl2);
   });
 
   it("uses an explicit concurrentRooms input when provided", () => {
     const r = calculate({ ...DEFAULT_INPUTS, rooms: 150, concurrentRooms: 9 });
     expect(r.concurrentRooms).toBe(9);
-    expect(r.pooledEncoders).toBe(3);
-    expect(r.pooledInvestment).toBe(3 * PRODUCT_PRICES.nexus);
+    expect(r.pooledModel).toBe("Pearl-2");
+    expect(r.pooledEncoders).toBe(2);
+    expect(r.pooledInvestment).toBe(2 * PRODUCT_PRICES.pearl2);
   });
 
   it("clamps concurrency to the room count", () => {
@@ -281,12 +284,23 @@ describe("centralized encoder pool (concurrency-based path)", () => {
     expect(r.pooledInvestment).toBeLessThan(r.totalInvestment);
   });
 
+  it("shows the pooled path only for deployments large enough to pool", () => {
+    expect(MIN_ROOMS_FOR_POOLED_PATH).toBe(12);
+    const big = calculate({ ...DEFAULT_INPUTS, rooms: 150 });
+    expect(big.showPooledPath).toBe(true);
+    const tiny = calculate({ ...DEFAULT_INPUTS, rooms: 10 });
+    expect(tiny.showPooledPath).toBe(false);
+  });
+
   it("Community College preset shows a small, affordable pool", () => {
     const cc = SCENARIOS.find((s) => s.label === "Community College");
     expect(cc).toBeTruthy();
     const r = calculate({ ...DEFAULT_INPUTS, rooms: cc!.rooms, concurrentRooms: cc!.concurrentRooms });
-    expect(r.pooledEncoders).toBe(getPooledEncoderCount(cc!.concurrentRooms!));
-    expect(r.pooledInvestment).toBe(getPooledInvestment(cc!.concurrentRooms!));
+    const plan = getPooledPlan(cc!.concurrentRooms!);
+    expect(r.pooledModel).toBe(plan.model);
+    expect(r.pooledEncoders).toBe(plan.encoders);
+    expect(r.pooledInvestment).toBe(plan.investment);
+    expect(r.showPooledPath).toBe(true); // 40 rooms ≥ 12
   });
 });
 

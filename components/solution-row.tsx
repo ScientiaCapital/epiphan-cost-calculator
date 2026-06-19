@@ -154,7 +154,9 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
       </div>
 
       {/* Section B2: A more affordable path (concurrency-based starting point).
-          Soft tease only — no architecture, no quote. The AE owns fit & pricing. */}
+          Soft tease only — no architecture, no quote. The AE owns fit & pricing.
+          Hidden for deployments too small to benefit from a central pool. */}
+      {r.showPooledPath && (
       <div className="bg-white rounded-lg border-2 border-[#0C3D34] p-4 mb-4">
         <h4 className="text-[14px] font-bold text-[#0C3D34] mb-1.5">
           Tighter budget? There may be a more affordable path.
@@ -163,7 +165,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           Not every room records at the same time. If only about{" "}
           <span className="font-bold text-[#170F30]">{r.concurrentRooms.toLocaleString()}</span> of
           your {inputs.rooms.toLocaleString()} rooms are ever live at once, you may not need an
-          encoder in every room &mdash; a smaller, centrally managed pool can cover the whole
+          encoder in every room &ndash; a smaller, centrally managed pool can cover the whole
           campus.
         </p>
         <div className="flex items-baseline gap-2 flex-wrap">
@@ -171,7 +173,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
             ~{formatCurrency(r.pooledInvestment)}
           </span>
           <span className="text-[12px] text-[#5a5a5a]">
-            starting point &middot; {r.pooledEncoders.toLocaleString()} central encoders &middot; vs{" "}
+            starting point &middot; {r.pooledEncoders.toLocaleString()} {r.pooledModel} encoders &middot; vs{" "}
             {formatCurrency(r.totalInvestment)} room-by-room
           </span>
         </div>
@@ -188,6 +190,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           Talk to an Epiphan AE &rarr;
         </a>
       </div>
+      )}
 
       {/* Section C: Product Cards, only show products in the mix */}
       <div className={`grid grid-cols-1 ${visibleCards.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-2"} gap-3 mb-4`}>

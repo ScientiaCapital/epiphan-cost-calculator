@@ -156,26 +156,69 @@ export function getInvestmentFromMix(mix: RoomMix): number {
   );
 }
 
-// ── Centralized Encoder Pool (concurrency-based sizing) ───────────────
+// ── Centralized Encoder Pool (concurrency-based "more affordable path") ─
 // Encoders are sized by how many rooms record at the SAME moment, not by
-// total room count: most rooms aren't live simultaneously. One Pearl Nexus
-// captures up to 3 simultaneous feeds (verified via Epiphan AI, 2026-06-17),
-// so a small shared pool can cover a whole campus. This is a directional
-// starting point for budget conversations — not a quote. An Epiphan account
-// engineer scopes the actual design (cameras, routing, POC).
-export const NEXUS_FEEDS_PER_ENCODER = 3;
+// total room count: most rooms aren't live simultaneously, so a small shared
+// pool of central rack encoders can cover a whole campus.
+//
+// `feeds` = separate, simultaneous, isolated 1080p30 recordings one unit
+// handles, taken from each product user guide's conservative "best
+// performance" channel count:
+//   • Pearl-2:     "For best performance, we recommend using a maximum of six
+//                   ... in up to six full HD channels" → 6
+//   • Pearl Nexus: "two video sources in up to two full HD channels"; also
+//                   "up to two 1080p30 SRT, RTSP, or NDI HX inputs are
+//                   recommended" — doubly grounded for networked room ingest → 2
+// Pearl Nano is single-channel with no switching, so a "pool" of Nanos is just
+// one box per room (defeats the central-pool premise) — intentionally excluded.
+// This is a directional starting point for budget conversations — not a quote.
+// An Epiphan account engineer scopes the actual design (cameras, routing, POC).
+export interface PoolEncoder {
+  id: string;
+  label: string;
+  feeds: number;
+  price: number;
+}
+
+export const POOL_ENCODERS: PoolEncoder[] = [
+  { id: "nexus", label: "Pearl Nexus", feeds: 2, price: PRODUCT_PRICES.nexus },
+  { id: "pearl2", label: "Pearl-2", feeds: 6, price: PRODUCT_PRICES.pearl2 },
+];
+
+export interface PooledPlan {
+  model: string;
+  encoders: number;
+  investment: number;
+}
+
+// Smallest deployment where a centrally managed pool is worth teasing. Below
+// this, per-room and pooled costs converge and the "fewer shared boxes" story
+// doesn't hold, so the buyer-facing tease is hidden.
+export const MIN_ROOMS_FOR_POOLED_PATH = 12;
 
 // Conservative default peak: ~1 in 4 rooms live at the busiest moment.
 export function defaultConcurrentRooms(rooms: number): number {
   return Math.min(rooms, Math.max(2, Math.round(rooms * 0.25)));
 }
 
-export function getPooledEncoderCount(concurrentRooms: number): number {
-  return Math.max(1, Math.ceil(concurrentRooms / NEXUS_FEEDS_PER_ENCODER));
-}
-
-export function getPooledInvestment(concurrentRooms: number): number {
-  return getPooledEncoderCount(concurrentRooms) * PRODUCT_PRICES.nexus;
+// Pick the lowest-investment central-encoder pool for a given peak concurrency.
+// Ties break toward fewer rack units (a denser, simpler-to-manage pool).
+export function getPooledPlan(concurrentRooms: number): PooledPlan {
+  const feedsNeeded = Math.max(1, concurrentRooms);
+  let best: PooledPlan | null = null;
+  for (const enc of POOL_ENCODERS) {
+    const encoders = Math.max(1, Math.ceil(feedsNeeded / enc.feeds));
+    const investment = encoders * enc.price;
+    if (
+      best === null ||
+      investment < best.investment ||
+      (investment === best.investment && encoders < best.encoders)
+    ) {
+      best = { model: enc.label, encoders, investment };
+    }
+  }
+  // POOL_ENCODERS is non-empty, so best is always assigned.
+  return best as PooledPlan;
 }
 
 // 3-year escalation factor (maintenance costs grow over time)
