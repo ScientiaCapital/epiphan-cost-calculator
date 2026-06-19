@@ -38,7 +38,7 @@ export function PdfDownloadButtonInner({ inputs, results }: Props) {
         />
       }
       fileName={getFilename(inputs.rooms)}
-      className="mt-3 w-full py-3 px-4 bg-[#1a2332] text-white font-semibold text-[14px] rounded-lg hover:bg-[#263346] transition-colors cursor-pointer flex items-center justify-center gap-2 no-underline"
+      className="mt-3 w-full py-3 px-4 bg-[#170F30] text-white font-semibold text-[14px] rounded-lg hover:bg-[#2A1E50] transition-colors cursor-pointer flex items-center justify-center gap-2 no-underline"
     >
       {({ loading }) =>
         loading ? "Preparing PDF..." : "\u{1F4C4} Download PDF Report"
