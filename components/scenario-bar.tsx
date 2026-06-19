@@ -1,6 +1,6 @@
 "use client";
 
-import { SCENARIOS, type ScenarioPreset } from "@/lib/constants";
+import { SCENARIOS, defaultConcurrentRooms, type ScenarioPreset } from "@/lib/constants";
 import { PIPELINE_SCENARIOS, type PipelineScenario } from "@/lib/pipeline-scenarios";
 import type { CalculatorInputs } from "@/lib/calculator";
 
@@ -9,7 +9,7 @@ interface ScenarioBarProps {
   onSelect: (inputs: Partial<CalculatorInputs>) => void;
 }
 
-/** Map a preset to the eight calculator input fields. */
+/** Map a preset to the calculator input fields. */
 function presetToInputs(s: ScenarioPreset): Partial<CalculatorInputs> {
   return {
     rooms: s.rooms,
@@ -20,6 +20,7 @@ function presetToInputs(s: ScenarioPreset): Partial<CalculatorInputs> {
     lecturesPerWeek: s.lecturesPerWeek,
     teachWeeks: s.teachWeeks,
     itSalary: s.itSalary,
+    concurrentRooms: s.concurrentRooms ?? defaultConcurrentRooms(s.rooms),
   };
 }
 
@@ -52,7 +53,7 @@ export function ScenarioBar({ activeRooms, onSelect }: ScenarioBarProps) {
             <button
               key={s.account}
               onClick={() => onSelect(presetToInputs(s))}
-              title={`${s.product} | ${s.pain}`}
+              title={`Recommended: ${s.product}`}
               className="py-1.5 px-2 text-[11px] font-semibold border border-[#e0e0e0] rounded-md bg-white cursor-pointer text-left transition-all hover:border-[#83CE41]"
             >
               {s.label}

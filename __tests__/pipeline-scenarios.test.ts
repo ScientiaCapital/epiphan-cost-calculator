@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { calculate, type CalculatorInputs } from "@/lib/calculator";
 import { PIPELINE_SCENARIOS } from "@/lib/pipeline-scenarios";
 import { buildShareUrl } from "@/components/share-button";
+import { defaultConcurrentRooms } from "@/lib/constants";
 
 // Each pipeline scenario is a real higher-ed deal derived from a Clari call.
 // These tests guard the contract: the derived inputs are valid, the calculator
@@ -17,6 +18,7 @@ function toInputs(s: (typeof PIPELINE_SCENARIOS)[number]): CalculatorInputs {
     tuition: s.tuition,
     itSalary: s.itSalary,
     currentFTE: s.currentFTE,
+    concurrentRooms: s.concurrentRooms ?? defaultConcurrentRooms(s.rooms),
   };
 }
 

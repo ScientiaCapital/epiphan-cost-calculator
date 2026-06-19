@@ -32,5 +32,8 @@ export function parseInputsFromParams(searchParams: string): CalculatorInputs {
   const fte = parseInt(params.get("fte") || "");
   if (fte >= 1 && fte <= 50) inputs.currentFTE = fte;
 
+  const conc = parseInt(params.get("conc") || "");
+  if (conc >= 1 && conc <= inputs.rooms) inputs.concurrentRooms = conc;
+
   return inputs;
 }

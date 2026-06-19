@@ -1,6 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { calculate, formatCurrency, formatCompact, type CalculatorInputs } from "@/lib/calculator";
-import { DEFAULT_INPUTS, SCENARIOS } from "@/lib/constants";
+import {
+  DEFAULT_INPUTS,
+  SCENARIOS,
+  PRODUCT_PRICES,
+  NEXUS_FEEDS_PER_ENCODER,
+  defaultConcurrentRooms,
+  getPooledEncoderCount,
+  getPooledInvestment,
+} from "@/lib/constants";
 
 // Helper: run calculator with default Mid-Size scenario (150 rooms, age 5)
 function defaultResult() {
@@ -116,7 +124,7 @@ describe("calculate()", () => {
   });
 
   describe("Department scenario (10 rooms, 7-year equipment)", () => {
-    const s = SCENARIOS[0]; // Department: 10 rooms, 7yr
+    const s = SCENARIOS.find((x) => x.label === "Department")!; // 10 rooms, 7yr
     const r = calculate({
       rooms: s.rooms,
       equipmentAge: s.equipmentAge,
@@ -147,7 +155,7 @@ describe("calculate()", () => {
   });
 
   describe("Large University scenario (500 rooms, 7-year equipment)", () => {
-    const s = SCENARIOS[3]; // Large University: 500 rooms, 7yr
+    const s = SCENARIOS.find((x) => x.label === "Large University")!; // 500 rooms, 7yr
     const r = calculate({
       rooms: s.rooms,
       equipmentAge: s.equipmentAge,
@@ -228,6 +236,57 @@ describe("calculate()", () => {
       const r = calcWith({ rooms: 1000, currentFTE: 50, students: 100000, tuition: 80000 });
       expect(r.paybackMonths).toBeGreaterThanOrEqual(1);
     });
+  });
+});
+
+describe("centralized encoder pool (concurrency-based path)", () => {
+  it("Pearl Nexus captures 3 simultaneous feeds", () => {
+    expect(NEXUS_FEEDS_PER_ENCODER).toBe(3);
+  });
+
+  it("sizes the encoder pool by concurrency, not room count", () => {
+    expect(getPooledEncoderCount(1)).toBe(1); // floor of 1 encoder
+    expect(getPooledEncoderCount(3)).toBe(1); // 3 feeds fit one encoder
+    expect(getPooledEncoderCount(4)).toBe(2); // spills into a second
+    expect(getPooledEncoderCount(9)).toBe(3);
+  });
+
+  it("prices the pool at the Nexus list price", () => {
+    expect(getPooledInvestment(9)).toBe(3 * PRODUCT_PRICES.nexus);
+  });
+
+  it("derives a conservative default concurrency when none is given", () => {
+    // defaultConcurrentRooms(150) = round(150 × 0.25) = 38
+    expect(defaultConcurrentRooms(150)).toBe(38);
+    const r = calculate(DEFAULT_INPUTS);
+    expect(r.concurrentRooms).toBe(38);
+    expect(r.pooledEncoders).toBe(13); // ceil(38 / 3)
+    expect(r.pooledInvestment).toBe(13 * PRODUCT_PRICES.nexus);
+  });
+
+  it("uses an explicit concurrentRooms input when provided", () => {
+    const r = calculate({ ...DEFAULT_INPUTS, rooms: 150, concurrentRooms: 9 });
+    expect(r.concurrentRooms).toBe(9);
+    expect(r.pooledEncoders).toBe(3);
+    expect(r.pooledInvestment).toBe(3 * PRODUCT_PRICES.nexus);
+  });
+
+  it("clamps concurrency to the room count", () => {
+    const r = calculate({ ...DEFAULT_INPUTS, rooms: 5, concurrentRooms: 99 });
+    expect(r.concurrentRooms).toBe(5);
+  });
+
+  it("makes the pooled path far cheaper than the per-room path (the budget story)", () => {
+    const r = calculate(DEFAULT_INPUTS);
+    expect(r.pooledInvestment).toBeLessThan(r.totalInvestment);
+  });
+
+  it("Community College preset shows a small, affordable pool", () => {
+    const cc = SCENARIOS.find((s) => s.label === "Community College");
+    expect(cc).toBeTruthy();
+    const r = calculate({ ...DEFAULT_INPUTS, rooms: cc!.rooms, concurrentRooms: cc!.concurrentRooms });
+    expect(r.pooledEncoders).toBe(getPooledEncoderCount(cc!.concurrentRooms!));
+    expect(r.pooledInvestment).toBe(getPooledInvestment(cc!.concurrentRooms!));
   });
 });
 

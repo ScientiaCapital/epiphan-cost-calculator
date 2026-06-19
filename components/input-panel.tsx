@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { CalculatorInputs } from "@/lib/calculator";
 import type { EquipmentAge } from "@/lib/constants";
-import { EQUIPMENT_AGE_OPTIONS } from "@/lib/constants";
+import { EQUIPMENT_AGE_OPTIONS, defaultConcurrentRooms } from "@/lib/constants";
 
 interface InputPanelProps {
   inputs: CalculatorInputs;
@@ -150,6 +150,25 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
                   max={200000}
                   step={5000}
                   onChange={(e) => update("itSalary", parseInt(e.target.value) || 85000)}
+                />
+              </Field>
+
+              <Field
+                label="Rooms Recording at the Same Time (peak)"
+                hint="Most rooms aren't live at once — your busiest concurrent moment"
+              >
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={inputs.concurrentRooms ?? defaultConcurrentRooms(inputs.rooms)}
+                  min={1}
+                  max={inputs.rooms}
+                  onChange={(e) =>
+                    update(
+                      "concurrentRooms",
+                      Math.min(inputs.rooms, parseInt(e.target.value) || defaultConcurrentRooms(inputs.rooms)),
+                    )
+                  }
                 />
               </Field>
             </>

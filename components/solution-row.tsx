@@ -61,8 +61,8 @@ const PRODUCT_CARDS = [
     capabilities: [
       "2x HDMI + SDI + USB inputs",
       "1TB local storage",
-      "Auto-publish to [redacted-cms], [redacted-cms], [redacted-cms]",
-      "Native Zoom & Teams integration",
+      "Auto-publish to your CMS / LMS",
+      "Works with your existing meeting platforms",
     ],
     callout: "Pairs with your existing cameras. Faculty press one button.",
   },
@@ -151,6 +151,42 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Section B2: A more affordable path (concurrency-based starting point).
+          Soft tease only — no architecture, no quote. The AE owns fit & pricing. */}
+      <div className="bg-white rounded-lg border-2 border-[#0C3D34] p-4 mb-4">
+        <h4 className="text-[14px] font-bold text-[#0C3D34] mb-1.5">
+          Tighter budget? There may be a more affordable path.
+        </h4>
+        <p className="text-[13px] text-[#424242] mb-3">
+          Not every room records at the same time. If only about{" "}
+          <span className="font-bold text-[#170F30]">{r.concurrentRooms.toLocaleString()}</span> of
+          your {inputs.rooms.toLocaleString()} rooms are ever live at once, you may not need an
+          encoder in every room &mdash; a smaller, centrally managed pool can cover the whole
+          campus.
+        </p>
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="text-[22px] font-extrabold text-[#0C3D34]">
+            ~{formatCurrency(r.pooledInvestment)}
+          </span>
+          <span className="text-[12px] text-[#5a5a5a]">
+            starting point &middot; {r.pooledEncoders.toLocaleString()} central encoders &middot; vs{" "}
+            {formatCurrency(r.totalInvestment)} room-by-room
+          </span>
+        </div>
+        <p className="text-[11px] text-[#5a5a5a] italic mt-2">
+          A starting point for the conversation, not a quote. An Epiphan account engineer scopes the
+          right design with you.
+        </p>
+        <a
+          href="https://www.epiphan.com/company/contact-us/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 mt-3 py-2 px-4 bg-[#0C3D34] text-white font-semibold text-[13px] rounded-lg hover:bg-[#0a322b] transition-colors"
+        >
+          Talk to an Epiphan AE &rarr;
+        </a>
       </div>
 
       {/* Section C: Product Cards, only show products in the mix */}

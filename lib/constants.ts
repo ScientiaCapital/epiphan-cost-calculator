@@ -156,6 +156,28 @@ export function getInvestmentFromMix(mix: RoomMix): number {
   );
 }
 
+// ── Centralized Encoder Pool (concurrency-based sizing) ───────────────
+// Encoders are sized by how many rooms record at the SAME moment, not by
+// total room count: most rooms aren't live simultaneously. One Pearl Nexus
+// captures up to 3 simultaneous feeds (verified via Epiphan AI, 2026-06-17),
+// so a small shared pool can cover a whole campus. This is a directional
+// starting point for budget conversations — not a quote. An Epiphan account
+// engineer scopes the actual design (cameras, routing, POC).
+export const NEXUS_FEEDS_PER_ENCODER = 3;
+
+// Conservative default peak: ~1 in 4 rooms live at the busiest moment.
+export function defaultConcurrentRooms(rooms: number): number {
+  return Math.min(rooms, Math.max(2, Math.round(rooms * 0.25)));
+}
+
+export function getPooledEncoderCount(concurrentRooms: number): number {
+  return Math.max(1, Math.ceil(concurrentRooms / NEXUS_FEEDS_PER_ENCODER));
+}
+
+export function getPooledInvestment(concurrentRooms: number): number {
+  return getPooledEncoderCount(concurrentRooms) * PRODUCT_PRICES.nexus;
+}
+
 // 3-year escalation factor (maintenance costs grow over time)
 export const THREE_YEAR_MULTIPLIER = 3.15;
 
@@ -170,9 +192,11 @@ export interface ScenarioPreset {
   lecturesPerWeek: number;
   teachWeeks: number;
   itSalary: number;
+  concurrentRooms?: number;
 }
 
 export const SCENARIOS: ScenarioPreset[] = [
+  { label: "Community College", rooms: 40,  students: 6000,   tuition: 5000,  currentFTE: 1,  equipmentAge: "7",  lecturesPerWeek: 12, teachWeeks: 30, itSalary: 68000, concurrentRooms: 8 },
   { label: "Department",      rooms: 10,    students: 800,    tuition: 30000, currentFTE: 1,  equipmentAge: "7",  lecturesPerWeek: 10, teachWeeks: 28, itSalary: 70000 },
   { label: "Small Campus",    rooms: 25,    students: 2000,   tuition: 28000, currentFTE: 1,  equipmentAge: "5",  lecturesPerWeek: 12, teachWeeks: 30, itSalary: 75000 },
   { label: "Mid-Size",        rooms: 150,   students: 12000,  tuition: 22000, currentFTE: 4,  equipmentAge: "5",  lecturesPerWeek: 15, teachWeeks: 30, itSalary: 85000 },
@@ -190,6 +214,7 @@ export const DEFAULT_INPUTS = {
   tuition: 22000,
   itSalary: 85000,
   currentFTE: 4,
+  concurrentRooms: 38, // defaultConcurrentRooms(150) — peak rooms recording at once
 };
 
 // ── Equipment Age Options (for select dropdown) ───────────────────────

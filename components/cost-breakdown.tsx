@@ -19,10 +19,11 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
       {/* CMS end-of-life trigger — the #1 buying signal for AV/Media and Instructional Tech teams */}
       <div className="px-5 py-3 bg-[#170F30] text-white">
         <div className="text-[13px] font-semibold">
-          Still running [redacted-cms], [redacted-cms], or [redacted-cms]? Here is what waiting costs you each year.
+          Running an aging or end-of-life lecture-capture system? Here is what waiting costs you each year.
         </div>
         <div className="text-[12px] text-[#b8b4d9] mt-0.5">
-          For the AV / Media Services and Instructional Technology team that owns lecture capture and the CMS workflow.
+          For the AV / Media Services and Instructional Technology team that owns lecture capture and
+          the CMS workflow &mdash; and the dean, CFO, or provost who approves the budget to fix it.
         </div>
       </div>
 
@@ -77,7 +78,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
 
         {/* 2. Failed & Missed Captures */}
         <CostCategory name="Failed & Missed Captures" cost={r.missedCaptureCost} barColor="red" maxCost={maxCost}>
-          Every recording that fails to reach [redacted-cms], [redacted-cms], or your CMS is a faculty complaint and a lost lecture.
+          Every recording that fails to reach your CMS is a faculty complaint and a lost lecture.
           At an estimated <strong className="text-[#111111]">{(r.failRate * 100).toFixed(0)}%</strong> failure rate across the <strong className="text-[#111111]">70%</strong> of rooms with active recording schedules,
           roughly <strong className="text-[#111111]">{r.missedLectures.toLocaleString()}</strong> of <strong className="text-[#111111]">{r.totalLectures.toLocaleString()}</strong> scheduled captures/year fail or come back unusable,
           affecting about <strong className="text-[#111111]">{r.studentsAffected.toLocaleString()}</strong> student-views. Each incident runs about <strong className="text-[#111111]">$150</strong> in IT investigation, instructor coordination, and complaint handling.

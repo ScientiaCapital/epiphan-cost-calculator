@@ -20,6 +20,9 @@ function buildShareUrl(inputs: CalculatorInputs): string {
   if (inputs.tuition !== DEFAULT_INPUTS.tuition) params.set("tuition", String(inputs.tuition));
   if (inputs.itSalary !== DEFAULT_INPUTS.itSalary) params.set("salary", String(inputs.itSalary));
   if (inputs.currentFTE !== DEFAULT_INPUTS.currentFTE) params.set("fte", String(inputs.currentFTE));
+  if (inputs.concurrentRooms !== undefined && inputs.concurrentRooms !== DEFAULT_INPUTS.concurrentRooms) {
+    params.set("conc", String(inputs.concurrentRooms));
+  }
 
   const qs = params.toString();
   const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";

@@ -21,6 +21,9 @@ import {
   THREE_YEAR_MULTIPLIER,
   getRoomMix,
   getInvestmentFromMix,
+  defaultConcurrentRooms,
+  getPooledEncoderCount,
+  getPooledInvestment,
 } from "./constants";
 
 // ── Input / Output Types ──────────────────────────────────────────────
@@ -34,6 +37,9 @@ export interface CalculatorInputs {
   tuition: number;
   itSalary: number;
   currentFTE: number;
+  // Peak rooms recording at the same moment. Optional: when omitted,
+  // calculate() derives a conservative default from room count.
+  concurrentRooms?: number;
 }
 
 export interface CategoryCost {
@@ -92,12 +98,18 @@ export interface CalculatorResults {
   totalInvestment: number;
   paybackMonths: number;
   roi3Year: number;
+
+  // Centralized encoder pool (concurrency-based "more affordable path")
+  concurrentRooms: number;
+  pooledEncoders: number;
+  pooledInvestment: number;
 }
 
 // ── Calculator ────────────────────────────────────────────────────────
 
 export function calculate(inputs: CalculatorInputs): CalculatorResults {
   const { rooms, equipmentAge, lecturesPerWeek, teachWeeks, students, tuition, itSalary, currentFTE } = inputs;
+  const concurrentRooms = Math.min(rooms, inputs.concurrentRooms ?? defaultConcurrentRooms(rooms));
 
   const totalLectures = rooms * lecturesPerWeek * teachWeeks;
 
@@ -151,6 +163,10 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   const paybackMonths = Math.min(36, Math.max(1, Math.round((totalInvestment / annualCost) * 12)));
   const roi3Year = Math.round(((threeYearCost - totalInvestment) / totalInvestment) * 100);
 
+  // Centralized encoder pool — sized by concurrency, not room count
+  const pooledEncoders = getPooledEncoderCount(concurrentRooms);
+  const pooledInvestment = getPooledInvestment(concurrentRooms);
+
   // Category breakdown for rendering — ordered by credibility tier
   // Tier 1: Operational (hard budget costs)
   // Tier 2: Productivity (measured losses)
@@ -196,6 +212,9 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
     totalInvestment,
     paybackMonths,
     roi3Year,
+    concurrentRooms,
+    pooledEncoders,
+    pooledInvestment,
   };
 }
 
