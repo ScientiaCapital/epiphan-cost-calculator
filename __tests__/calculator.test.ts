@@ -98,16 +98,16 @@ describe("calculate()", () => {
     it("computes blended room mix for 150 rooms", () => {
       // Mid-size mix: nano=30, nexus=38, pearl2=8, nexusEc20=74
       expect(r.roomMix).toEqual({ nano: 30, nexus: 38, nexusEc20: 74, pearl2: 8 });
-      // Investment: 30×1999 + 38×3299 + 74×5198 + 8×7999 = $633,976
-      expect(r.totalInvestment).toBe(633976);
-      expect(r.blendedPerRoom).toBe(Math.round(633976 / 150));
+      // Investment: 30×1999 + 38×3999 + 74×5898 + 8×8999 = $720,376
+      expect(r.totalInvestment).toBe(720376);
+      expect(r.blendedPerRoom).toBe(Math.round(720376 / 150));
     });
 
     it("computes payback and ROI with blended investment", () => {
-      // paybackMonths = round(($633,976 / $1,540,025) × 12) = 5
-      const expectedPayback = Math.min(36, Math.max(1, Math.round((633976 / r.annualCost) * 12)));
+      // paybackMonths = round(($720,376 / $1,540,025) × 12) = 6
+      const expectedPayback = Math.min(36, Math.max(1, Math.round((720376 / r.annualCost) * 12)));
       expect(r.paybackMonths).toBe(expectedPayback);
-      expect(r.paybackMonths).toBe(5);
+      expect(r.paybackMonths).toBe(6);
     });
 
     it("returns 7 cost categories", () => {
@@ -141,8 +141,8 @@ describe("calculate()", () => {
     it("uses small-deployment room mix (≤25 rooms)", () => {
       // 10 rooms: nexus=round(10×0.70)=7, nexusEc20=3
       expect(r.roomMix).toEqual({ nano: 0, nexus: 7, nexusEc20: 3, pearl2: 0 });
-      // Investment: 7×3299 + 3×5198 = 23,093 + 15,594 = $38,687
-      expect(r.totalInvestment).toBe(38687);
+      // Investment: 7×3999 + 3×5898 = 27,993 + 17,694 = $45,687
+      expect(r.totalInvestment).toBe(45687);
     });
   });
 
@@ -176,8 +176,8 @@ describe("calculate()", () => {
     it("uses large-deployment room mix (>200 rooms)", () => {
       // 500 rooms: nano=125, nexus=75, pearl2=50, nexusEc20=250
       expect(r.roomMix).toEqual({ nano: 125, nexus: 75, nexusEc20: 250, pearl2: 50 });
-      // Investment: 125×1999 + 75×3299 + 250×5198 + 50×7999
-      const expected = 125*1999 + 75*3299 + 250*5198 + 50*7999;
+      // Investment: 125×1999 + 75×3999 + 250×5898 + 50×8999
+      const expected = 125*1999 + 75*3999 + 250*5898 + 50*8999;
       expect(r.totalInvestment).toBe(expected);
     });
   });
@@ -196,7 +196,7 @@ describe("calculate()", () => {
       const r = calcWith({ rooms: 25, currentFTE: 1 });
       // nexus=round(25×0.70)=18, nexusEc20=7
       expect(r.roomMix).toEqual({ nano: 0, nexus: 18, nexusEc20: 7, pearl2: 0 });
-      expect(r.totalInvestment).toBe(18*3299 + 7*5198);
+      expect(r.totalInvestment).toBe(18*3999 + 7*5898);
     });
 
     it("handles boundary at 200 rooms (mid tier)", () => {

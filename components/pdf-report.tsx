@@ -13,12 +13,15 @@ import {
 import { EQUIPMENT_AGE_OPTIONS } from "@/lib/constants";
 
 // ── Brand Colors ─────────────────────────────────────────────────────
-const NAVY = "#1a2332";
-const RED = "#d32f2f";
-const TEAL = "#00897b";
-const GREEN = "#7ab800";
-const GRAY = "#666666";
-const LIGHT_GRAY = "#f5f5f5";
+// Official Epiphan palette, validated against the Epiphan Brand MCP
+// (get_brand_asset_kit / get_style_tokens) on 2026-06-19.
+const NAVY = "#170F30"; // indigo-ink — primary dark (titles, headers, dark cards)
+const RED = "#F4716E"; // coral — alarm / exposure
+const TEAL = "#0C3D34"; // teal-base — payback card
+const GREEN = "#83CE41"; // green-base — positive / ROI accent (use dark text on it)
+const WORDMARK = "#414042"; // Epiphan logo wordmark gray
+const GRAY = "#5a5a5a"; // ink-3
+const LIGHT_GRAY = "#f1f2f0"; // surface-2
 const WHITE = "#ffffff";
 
 // ── Styles ───────────────────────────────────────────────────────────
@@ -51,7 +54,7 @@ const s = StyleSheet.create({
   brand: {
     fontSize: 12,
     fontFamily: "Helvetica-Bold",
-    color: GREEN,
+    color: WORDMARK,
   },
   // Section headers
   sectionHeader: {
@@ -339,7 +342,7 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
 
         {/* 6. Solution ROI */}
         <Text style={s.sectionHeader}>
-          Solution ROI — Blended Room Mix ({formatCurrency(results.blendedPerRoom)}/room avg)
+          Solution ROI: Blended Room Mix ({formatCurrency(results.blendedPerRoom)}/room avg)
         </Text>
         <View style={s.roiRow}>
           <View style={[s.roiCard, { backgroundColor: LIGHT_GRAY }]}>
@@ -357,10 +360,10 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
             <Text style={[s.roiLabel, { color: WHITE }]}>Payback Period</Text>
           </View>
           <View style={[s.roiCard, { backgroundColor: GREEN }]}>
-            <Text style={[s.roiValue, { color: WHITE }]}>
+            <Text style={[s.roiValue, { color: NAVY }]}>
               {results.roi3Year.toLocaleString()}%
             </Text>
-            <Text style={[s.roiLabel, { color: WHITE }]}>3-Year ROI</Text>
+            <Text style={[s.roiLabel, { color: NAVY }]}>3-Year ROI</Text>
           </View>
         </View>
 

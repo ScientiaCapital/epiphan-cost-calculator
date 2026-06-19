@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "gen:reports": "node scripts/generate-account-reports.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",

@@ -98,14 +98,21 @@ export const RETENTION_PCT_BY_AGE: AgeMultiplierTable = {
 export const OPTIMAL_ROOMS_PER_PERSON = 100;
 
 // ── Product Pricing ──────────────────────────────────────────────────
+// Validated against the live Epiphan AI product catalog on 2026-06-19
+// (search_product_catalog). SKUs: Pearl Nano ESP1610, Pearl Nexus 256-SD
+// ESP1948 (standard), EC20 ESP1899, Pearl-2 ESP1150.
 export const PRODUCT_PRICES = {
-  nano: 1999,       // Pearl Nano — single-source encoder, PoE+
-  nexus: 3299,      // Pearl Nexus — 3-channel rackmount encoder
-  ec20: 1899,       // EC20 PTZ Camera — 4K60 AI tracking
-  pearl2: 7999,     // Pearl-2 — 6-channel flagship encoder
+  nano: 1999,       // Pearl Nano (ESP1610) — single-input encoder, PoE+ — catalog ✓
+  nexus: 3999,      // Pearl Nexus 256-SD (ESP1948) — NDI encoder — catalog ✓ (was $3,299; corrected 2026-06-19)
+  ec20: 1899,       // EC20 PTZ Camera (ESP1899) — AI auto-tracking — catalog ✓
+  pearl2: 8999,     // Pearl-2 (ESP1150) — flagship, 4K add-on included — catalog ✓ (was $7,999; corrected 2026-06-19)
 } as const;
 
-export const NEXUS_EC20_BUNDLE = PRODUCT_PRICES.nexus + PRODUCT_PRICES.ec20; // $5,198
+// Conservative: list price of the two SKUs bought together. The real
+// "Lect Cap Essential" bundle SKU (ESP1904, Nexus + 1 EC20) lists at $5,329 —
+// cheaper than this sum, so modeling the sum slightly overstates investment
+// (i.e. understates ROI), which keeps the analysis defensible.
+export const NEXUS_EC20_BUNDLE = PRODUCT_PRICES.nexus + PRODUCT_PRICES.ec20; // $5,898
 
 // ── Room Mix by Deployment Size ─────────────────────────────────────
 // Reflects realistic campus composition: not every room needs a camera,
