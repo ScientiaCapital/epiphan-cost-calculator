@@ -4,6 +4,9 @@ import {
   View,
   Text,
   StyleSheet,
+  Font,
+  Svg,
+  Path,
 } from "@react-pdf/renderer";
 import {
   type CalculatorInputs,
@@ -11,6 +14,29 @@ import {
   formatCurrency,
 } from "@/lib/calculator";
 import { EQUIPMENT_AGE_OPTIONS } from "@/lib/constants";
+import { SOEHNE_BUCH_DATA_URI, SOEHNE_HALBFETT_DATA_URI } from "@/lib/brand-fonts";
+import {
+  EPIPHAN_LOGO_VIEWBOX,
+  EPIPHAN_WORDMARK_PATHS,
+  EPIPHAN_MARK_PATH,
+} from "./epiphan-logo-paths";
+
+// Register Söhne (official Epiphan typeface) so the report renders on-brand
+// in both the browser (PDFDownloadLink) and the Node report generator.
+Font.register({ family: "Soehne", src: SOEHNE_BUCH_DATA_URI });
+Font.register({ family: "Soehne-Bold", src: SOEHNE_HALBFETT_DATA_URI });
+
+/** Epiphan Video logo (dark variant) for the white report header. */
+function PdfEpiphanLogo() {
+  return (
+    <Svg width={84} height={23} viewBox={EPIPHAN_LOGO_VIEWBOX}>
+      {EPIPHAN_WORDMARK_PATHS.map((d, i) => (
+        <Path key={i} d={d} fill="#414042" />
+      ))}
+      <Path d={EPIPHAN_MARK_PATH} fill="#8CBE3F" />
+    </Svg>
+  );
+}
 
 // ── Brand Colors ─────────────────────────────────────────────────────
 // Official Epiphan palette, validated against the Epiphan Brand MCP
@@ -29,7 +55,7 @@ const s = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 10,
-    fontFamily: "Helvetica",
+    fontFamily: "Soehne",
     color: "#333333",
   },
   // Header
@@ -43,7 +69,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
     color: NAVY,
   },
   subtitle: {
@@ -53,13 +79,13 @@ const s = StyleSheet.create({
   },
   brand: {
     fontSize: 12,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
     color: WORDMARK,
   },
   // Section headers
   sectionHeader: {
     fontSize: 13,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
     color: NAVY,
     marginTop: 18,
     marginBottom: 8,
@@ -86,7 +112,7 @@ const s = StyleSheet.create({
     width: "45%",
     textAlign: "right",
     paddingRight: 6,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
   },
   // Cost summary box
   costBox: {
@@ -106,7 +132,7 @@ const s = StyleSheet.create({
   },
   costCardValue: {
     fontSize: 18,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
     color: WHITE,
   },
   // Breakdown table
@@ -122,7 +148,7 @@ const s = StyleSheet.create({
   breakdownCost: {
     width: "25%",
     textAlign: "right",
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
   },
   breakdownPct: {
     width: "25%",
@@ -145,7 +171,7 @@ const s = StyleSheet.create({
   },
   metricValue: {
     fontSize: 16,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
     color: NAVY,
   },
   metricLabel: {
@@ -168,7 +194,7 @@ const s = StyleSheet.create({
   },
   roiValue: {
     fontSize: 14,
-    fontFamily: "Helvetica-Bold",
+    fontFamily: "Soehne-Bold",
   },
   roiLabel: {
     fontSize: 8,
@@ -240,7 +266,7 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
             <Text style={s.title}>Cost of Inaction Analysis</Text>
             <Text style={s.subtitle}>Generated {generatedDate}</Text>
           </View>
-          <Text style={s.brand}>Epiphan Video</Text>
+          <PdfEpiphanLogo />
         </View>
 
         {/* 2. Campus Profile — primary inputs */}
@@ -300,7 +326,7 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
           ].map((tier) => (
             <View key={tier.label}>
               <View style={{ backgroundColor: "#e8eaed", paddingVertical: 3, paddingHorizontal: 6, marginTop: tier.start > 0 ? 6 : 0 }}>
-                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: NAVY, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                <Text style={{ fontSize: 8, fontFamily: "Soehne-Bold", color: NAVY, textTransform: "uppercase", letterSpacing: 0.5 }}>
                   {tier.label}
                 </Text>
               </View>

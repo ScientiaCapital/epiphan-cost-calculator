@@ -38,12 +38,12 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
   }
 
   const inputClass =
-    "w-full px-3 py-2.5 border-[1.5px] border-[#e0e0e0] rounded-md text-[15px] transition-colors focus:outline-none focus:border-[#7ab800]";
+    "w-full px-3 py-2.5 border-[1.5px] border-[#e0e0e0] rounded-md text-[15px] transition-colors focus:outline-none focus:border-[#83CE41]";
 
   return (
     <div className="sticky top-6">
       <div className="bg-white rounded-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.08)] overflow-hidden">
-        <div className="px-5 py-4 font-bold text-[14px] uppercase tracking-wide bg-[#1a2332] text-white flex items-center gap-2 border-b border-[#eeeeee]">
+        <div className="px-5 py-4 font-bold text-[14px] uppercase tracking-wide bg-[#170F30] text-white flex items-center gap-2 border-b border-[#eeeeee]">
           &#9881; Your Campus Profile
         </div>
         <div className="p-5">
@@ -72,7 +72,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
             </select>
           </Field>
 
-          <Field label="Current AV / Media Staff (FTEs)" hint="Industry avg: 47 rooms per person">
+          <Field label="Current AV / Media Staff (FTEs)" hint="Benchmark: ~43 rooms per person">
             <input
               type="number"
               className={inputClass}
@@ -88,7 +88,7 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="text-[13px] font-semibold text-[#7ab800] hover:text-[#5a8a00] transition-colors cursor-pointer mb-3"
+            className="text-[13px] font-semibold text-[#170F30] hover:text-[#0C3D34] transition-colors cursor-pointer mb-3"
           >
             {showAdvanced ? "Hide Advanced \u25B4" : "Advanced Settings \u25BE"}
           </button>

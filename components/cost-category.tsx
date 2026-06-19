@@ -12,9 +12,9 @@ interface CostCategoryProps {
 }
 
 const BAR_COLORS = {
-  red: "bg-[#d32f2f]",
-  amber: "bg-[#f57c00]",
-  blue: "bg-[#1565c0]",
+  red: "bg-[#F4716E]",
+  amber: "bg-[#6651FC]",
+  blue: "bg-[#0C3D34]",
 };
 
 export function CostCategory({ name, cost, barColor, maxCost, children }: CostCategoryProps) {
@@ -37,7 +37,7 @@ export function CostCategory({ name, cost, barColor, maxCost, children }: CostCa
           </span>
           {name}
         </div>
-        <div className="font-bold text-[16px] text-[#d32f2f] whitespace-nowrap">
+        <div className="font-bold text-[16px] text-[#170F30] whitespace-nowrap">
           {formatCurrency(cost)}
         </div>
       </div>
@@ -49,7 +49,7 @@ export function CostCategory({ name, cost, barColor, maxCost, children }: CostCa
         />
       </div>
 
-      <div className={`mt-2.5 text-[12px] text-[#757575] leading-relaxed ${open ? "" : "hidden print:block"}`}>
+      <div className={`mt-2.5 text-[13px] text-[#333333] leading-relaxed [&_em]:text-[#5a5a5a] ${open ? "" : "hidden print:block"}`}>
         {children}
       </div>
     </div>

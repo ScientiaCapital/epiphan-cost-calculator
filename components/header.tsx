@@ -1,15 +1,17 @@
+import { EpiphanLogo } from "./epiphan-logo";
+
 export function Header() {
   return (
-    <header className="bg-[#1a2332] text-white px-8 py-6 flex justify-between items-center flex-wrap gap-3">
+    <header className="bg-[#170F30] text-white px-8 py-6 flex justify-between items-center flex-wrap gap-4">
       <div>
         <h1 className="text-[22px] font-bold">
-          The <span className="text-[#d32f2f]">Cost of Inaction</span> Calculator
+          The <span className="text-[#83CE41]">Cost of Inaction</span> Calculator
         </h1>
-        <p className="text-[13px] text-[#90a4ae]">
-          See what aging AV infrastructure is really costing — plug in your numbers
+        <p className="text-[13px] text-[#b8b4d9]">
+          See what aging AV infrastructure is really costing your campus. Plug in your numbers.
         </p>
       </div>
-      <div className="text-[13px] text-[#7ab800] font-semibold">epiphan video</div>
+      <EpiphanLogo variant="white" height={30} />
     </header>
   );
 }

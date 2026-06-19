@@ -3,22 +3,22 @@
 import { useEffect, useState } from "react";
 
 const SOURCES = [
-  { category: "Support Costs", source: "MetricNet Service Desk Benchmarks", detail: "$22 Tier 1 / $65 Tier 2 / $104 Tier 3" },
+  { category: "Support Costs", source: "MetricNet Service Desk Benchmarks", detail: "$22 Tier 1 / ~$70 Tier 2 / $104 Tier 3" },
   { category: "Escalation Pricing", source: "HDI Industry Report", detail: "Tier-based pricing model" },
-  { category: "Room Estimation", source: "IPEDS College Scorecard", detail: "~64 rooms per 1K students" },
-  { category: "Student Retention", source: "Springer Higher Education", detail: "Lecture capture reduces attrition 12.3% → 5%" },
-  { category: "Staff Efficiency", source: "Collegis Education / OculusIT", detail: "Industry staffing benchmarks" },
-  { category: "ADA Compliance", source: "3Play Media / AudioEye", detail: "97% gap rate, $27K avg settlement" },
+  { category: "Room Estimation", source: "Epiphan planning estimate", detail: "~64 rooms per 1K students" },
+  { category: "Student Retention", source: "ben Hassen et al. 2025 (SAGE Open)", detail: "First-year attrition 12.3% to 5%, single cohort" },
+  { category: "Staff Efficiency", source: "Campus Technology / Collegis Education", detail: "~43 rooms/person published benchmark" },
+  { category: "ADA Compliance", source: "AudioEye / WebAIM; Accessible.org", detail: "97% gap rate; $5K to $20K typical settlements" },
   { category: "Downtime Costs", source: "Blended cost methodology", detail: "$500 blended avg per event (minor ~$100, major ~$2K+)" },
-  { category: "AV Operations", source: "Epiphan AV Professional Survey 2025", detail: "500+ respondents, 47 rooms/person avg" },
-  { category: "Cost Savings", source: "Dartmouth OpenAV", detail: "$1.6M saved across 140 classrooms" },
+  { category: "AV Operations", source: "Epiphan AV Professional Survey 2025", detail: "500+ respondents, 4.6 tickets/room/year" },
+  { category: "Reference Scale", source: "Epiphan case studies", detail: "NC State, UNLV, MTSU, NTNU at-scale deployments" },
 ];
 
 const DEPLOYMENTS = [
-  "NC State University — 300+ rooms",
-  "UNLV — 215 units, remote fleet management",
-  "MTSU — 428 rooms",
-  "NTNU — 700 rooms, 42K students",
+  "NC State University: 300+ rooms, core team of 3",
+  "UNLV: 200+ Pearl Nexus units, remote fleet management",
+  "MTSU: 428 rooms",
+  "NTNU: 700+ rooms, 42K students",
 ];
 
 export function Methodology() {
@@ -44,7 +44,7 @@ export function Methodology() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 bg-[#f5f5f5] rounded-lg text-[13px] font-semibold text-[#616161] hover:bg-[#eeeeee] transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between p-4 bg-[#f5f5f5] rounded-lg text-[13px] font-semibold text-[#5a5a5a] hover:bg-[#eeeeee] transition-colors cursor-pointer"
       >
         <span>Methodology &amp; Sources</span>
         <span className="text-[16px]">{open ? "\u25B4" : "\u25BE"}</span>
@@ -57,7 +57,7 @@ export function Methodology() {
             <h4 className="text-[13px] font-bold text-[#424242] mb-1">
               How We Calculate
             </h4>
-            <p className="text-[12px] text-[#616161] leading-relaxed">
+            <p className="text-[12px] text-[#5a5a5a] leading-relaxed">
               Our model estimates the hidden annual cost of maintaining aging AV
               infrastructure across three tiers: operational costs (support tickets,
               excess staffing, configuration labor), productivity impact (capture
@@ -81,7 +81,7 @@ export function Methodology() {
               {SOURCES.map((row, i) => (
                 <div
                   key={row.category}
-                  className={`grid grid-cols-[140px_1fr_1fr] text-[11px] text-[#616161] ${
+                  className={`grid grid-cols-[140px_1fr_1fr] text-[11px] text-[#5a5a5a] ${
                     i % 2 === 0 ? "bg-white" : "bg-[#fafafa]"
                   }`}
                 >
@@ -100,7 +100,7 @@ export function Methodology() {
             <h4 className="text-[13px] font-bold text-[#424242] mb-1">
               Reference Deployments
             </h4>
-            <ul className="text-[12px] text-[#616161] space-y-0.5">
+            <ul className="text-[12px] text-[#5a5a5a] space-y-0.5">
               {DEPLOYMENTS.map((d) => (
                 <li key={d}>&#8226; {d}</li>
               ))}

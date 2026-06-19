@@ -33,8 +33,8 @@ export function ScenarioBar({ activeRooms, onSelect }: ScenarioBarProps) {
             onClick={() => onSelect(presetToInputs(s))}
             className={`flex-1 min-w-[100px] py-2 px-1 text-[11px] font-bold uppercase tracking-wide border-2 rounded-md bg-white cursor-pointer text-center transition-all ${
               activeRooms === s.rooms
-                ? "border-[#7ab800] bg-[#f1f8e9] text-[#5a8a00]"
-                : "border-[#e0e0e0] hover:border-[#7ab800]"
+                ? "border-[#83CE41] bg-[#D4F4C1] text-[#170F30]"
+                : "border-[#e0e0e0] hover:border-[#83CE41]"
             }`}
           >
             {s.label}
@@ -53,7 +53,7 @@ export function ScenarioBar({ activeRooms, onSelect }: ScenarioBarProps) {
               key={s.account}
               onClick={() => onSelect(presetToInputs(s))}
               title={`${s.product} | ${s.pain}`}
-              className="py-1.5 px-2 text-[11px] font-semibold border border-[#e0e0e0] rounded-md bg-white cursor-pointer text-left transition-all hover:border-[#7ab800]"
+              className="py-1.5 px-2 text-[11px] font-semibold border border-[#e0e0e0] rounded-md bg-white cursor-pointer text-left transition-all hover:border-[#83CE41]"
             >
               {s.label}
               <span className="text-[12px] block text-[#5a6b7b]">{s.rooms} rooms</span>

@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
+// Söhne — official Epiphan brand typeface (from the Epiphan Brand kit).
+const soehne = localFont({
+  src: [
+    { path: "./fonts/soehne-buch.otf", weight: "400", style: "normal" },
+    { path: "./fonts/soehne-halbfett.otf", weight: "600", style: "normal" },
+  ],
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Cost of Inaction Calculator — Epiphan Video",
+  title: "Cost of Inaction Calculator | Epiphan Video",
   description:
     "Calculate the hidden costs of aging AV infrastructure in higher education. Research-backed analysis across 7 cost categories.",
 };
@@ -20,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+      <body className={`${soehne.variable} ${soehne.className} antialiased`}>{children}</body>
     </html>
   );
 }
