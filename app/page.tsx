@@ -18,9 +18,13 @@ import { Methodology } from "@/components/methodology";
 export default function Home() {
   const [inputs, setInputs] = useState<CalculatorInputs>(DEFAULT_INPUTS);
 
-  // Load inputs from URL params on first render (for shared links)
+  // Load inputs from URL params on first render (for shared links). This is
+  // done in an effect rather than a render-time initializer on purpose: the
+  // server prerenders with DEFAULT_INPUTS, so syncing from window.location
+  // after mount keeps SSR and client hydration in agreement.
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount sync from a browser API, see comment above
       setInputs(parseInputsFromParams(window.location.search));
     }
   }, []);

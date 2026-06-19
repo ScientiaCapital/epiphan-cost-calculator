@@ -25,7 +25,11 @@ export function Methodology() {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState("");
 
+  // Format the date client-side only: a locale/timezone-formatted string would
+  // otherwise differ between the server prerender and the client and trigger a
+  // hydration mismatch, so we set it after mount.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only value to avoid hydration mismatch, see comment above
     setDate(
       new Date().toLocaleDateString("en-US", {
         month: "long",
