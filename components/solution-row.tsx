@@ -1,6 +1,6 @@
 import type { CalculatorInputs, CalculatorResults } from "@/lib/calculator";
 import { formatCurrency } from "@/lib/calculator";
-import { PRODUCT_PRICES, NEXUS_EC20_BUNDLE } from "@/lib/constants";
+import { PRODUCT_PRICES, NEXUS_EC20_BUNDLE, AE_BOOKING_URL } from "@/lib/constants";
 
 interface SolutionRowProps {
   inputs: CalculatorInputs;
@@ -182,7 +182,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           right design with you.
         </p>
         <a
-          href="https://meetings.hubspot.com/timkipper/discovery-call"
+          href={AE_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 mt-3 py-2 px-4 bg-[#0C3D34] text-white font-semibold text-[13px] rounded-lg hover:bg-[#0a322b] transition-colors"

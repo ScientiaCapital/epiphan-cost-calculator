@@ -224,6 +224,10 @@ export function getPooledPlan(concurrentRooms: number): PooledPlan {
 // 3-year escalation factor (maintenance costs grow over time)
 export const THREE_YEAR_MULTIPLIER = 3.15;
 
+// Booking link for the "Talk to an Epiphan AE" CTA. Single source of truth so a
+// routing change is a one-line edit, not a hunt through component JSX.
+export const AE_BOOKING_URL = "https://meetings.hubspot.com/timkipper/discovery-call";
+
 // ── Scenario Presets ──────────────────────────────────────────────────
 export interface ScenarioPreset {
   label: string;

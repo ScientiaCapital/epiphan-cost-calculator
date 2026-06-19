@@ -66,6 +66,20 @@ describe("parseInputsFromParams()", () => {
     expect(result.currentFTE).toBe(DEFAULT_INPUTS.currentFTE);
   });
 
+  it("applies a valid in-range conc value", () => {
+    expect(parseInputsFromParams("?rooms=200&conc=12").concurrentRooms).toBe(12);
+  });
+
+  it("rejects an out-of-bounds conc value, keeping the default", () => {
+    // conc must satisfy 1 <= conc <= rooms; otherwise it is ignored
+    expect(parseInputsFromParams("?rooms=10&conc=9999").concurrentRooms).toBe(
+      DEFAULT_INPUTS.concurrentRooms
+    );
+    expect(parseInputsFromParams("?rooms=200&conc=0").concurrentRooms).toBe(
+      DEFAULT_INPUTS.concurrentRooms
+    );
+  });
+
   it("handles partial params — only overrides what is provided", () => {
     const result = parseInputsFromParams("?rooms=150&fte=4");
     expect(result.rooms).toBe(150);

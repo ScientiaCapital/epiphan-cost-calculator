@@ -255,6 +255,11 @@ describe("centralized encoder pool (concurrency-based path)", () => {
     expect(plan.investment).toBe(4 * PRODUCT_PRICES.nexus);
   });
 
+  it("floors the default concurrency at 1 for a single-room deployment", () => {
+    // min(1, max(2, round(0.25))) = min(1, 2) = 1
+    expect(defaultConcurrentRooms(1)).toBe(1);
+  });
+
   it("derives a conservative default concurrency when none is given", () => {
     // defaultConcurrentRooms(150) = round(150 × 0.25) = 38
     expect(defaultConcurrentRooms(150)).toBe(38);
