@@ -180,7 +180,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           right design with you.
         </p>
         <a
-          href="https://www.epiphan.com/company/contact-us/"
+          href="https://meetings.hubspot.com/timkipper/discovery-call"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 mt-3 py-2 px-4 bg-[#0C3D34] text-white font-semibold text-[13px] rounded-lg hover:bg-[#0a322b] transition-colors"

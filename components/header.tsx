@@ -8,9 +8,7 @@ export function Header() {
           The <span className="text-[#83CE41]">Cost of Inaction</span> Calculator
         </h1>
         <p className="text-[13px] text-[#b8b4d9]">
-          See what aging AV infrastructure is really costing your campus &mdash; and walk away with
-          the number to take to whoever owns the budget. Built for AV &amp; media services and the
-          dean, CFO, or provost who signs off.
+          What aging AV quietly costs your campus each year &mdash; and the number to take to whoever signs the budget.
         </p>
       </div>
       <EpiphanLogo variant="white" height={30} />
