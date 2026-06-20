@@ -156,6 +156,16 @@ export function getInvestmentFromMix(mix: RoomMix): number {
   );
 }
 
+// ── EC20 Direct-to-CMS Ramp ─────────────────────────────────────────────
+// The lowest-barrier "start simple" path: one EC20 PTZ camera per room,
+// publishing straight to the CMS with NO encoder in the path. Not the lowest
+// TOTAL cost (a concurrency pool is cheaper at scale), but the simplest
+// "a capture device in every room" / phase-1 / new-logo entry — and a genuine
+// saving versus the encoder-in-every-room blended mix. $1,899/room (catalog ✓).
+export function getEc20DirectInvestment(rooms: number): number {
+  return rooms * PRODUCT_PRICES.ec20;
+}
+
 // ── Centralized Encoder Pool (concurrency-based "more affordable path") ─
 // Encoders are sized by how many rooms record at the SAME moment, not by
 // total room count: most rooms aren't live simultaneously, so a small shared

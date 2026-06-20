@@ -153,6 +153,33 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
         </div>
       </div>
 
+      {/* Section B1.5: EC20 direct-to-CMS — the lowest-barrier "start simple"
+          ramp. A camera in every room, no encoder, publishes straight to the
+          CMS. Framed as a phase-1 / new-logo entry, not the cheapest total. */}
+      {r.showEc20DirectPath && (
+      <div className="bg-white rounded-lg border-2 border-[#83CE41] p-4 mb-4">
+        <h4 className="text-[14px] font-bold text-[#170F30] mb-1.5">
+          Start simple: a camera in every room.
+        </h4>
+        <p className="text-[13px] text-[#424242] mb-3">
+          Skip the encoder entirely. An EC20 PTZ camera in each room publishes straight to your
+          CMS &ndash; no rack, no operator, the lowest-barrier way to cover every room.
+        </p>
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="text-[22px] font-extrabold text-[#170F30]">
+            {formatCurrency(r.ec20DirectInvestment)}
+          </span>
+          <span className="text-[12px] text-[#5a5a5a]">
+            {r.ec20DirectUnits.toLocaleString()} EC20 cameras &middot; vs{" "}
+            {formatCurrency(r.totalInvestment)} room-by-room
+          </span>
+        </div>
+        <p className="text-[11px] text-[#5a5a5a] italic mt-2">
+          A great phase-1 or first-deployment start &mdash; add encoders and switching as you grow.
+        </p>
+      </div>
+      )}
+
       {/* Section B2: A more affordable path (concurrency-based starting point).
           Soft tease only — no architecture, no quote. The AE owns fit & pricing.
           Hidden for deployments too small to benefit from a central pool. */}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { CalculatorInputs } from "@/lib/calculator";
 import type { EquipmentAge } from "@/lib/constants";
 import { EQUIPMENT_AGE_OPTIONS, defaultConcurrentRooms } from "@/lib/constants";
+import { getVerticalConfig } from "@/lib/verticals";
 
 interface InputPanelProps {
   inputs: CalculatorInputs;
@@ -32,6 +33,7 @@ function Field({
 
 export function InputPanel({ inputs, onChange }: InputPanelProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const labels = getVerticalConfig(inputs.vertical).labels;
 
   function update<K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) {
     onChange({ ...inputs, [key]: value });
@@ -44,10 +46,10 @@ export function InputPanel({ inputs, onChange }: InputPanelProps) {
     <div className="sticky top-6">
       <div className="bg-white rounded-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.08)] overflow-hidden">
         <div className="px-5 py-4 font-bold text-[14px] uppercase tracking-wide bg-[#170F30] text-white flex items-center gap-2 border-b border-[#eeeeee]">
-          &#9881; Your Campus Profile
+          &#9881; {labels.profileTitle}
         </div>
         <div className="p-5">
-          <Field label="AV-Equipped Rooms" hint="Classrooms, lecture halls, labs, studios">
+          <Field label={labels.unitsLabel} hint={labels.unitsHint}>
             <input
               type="number"
               className={inputClass}

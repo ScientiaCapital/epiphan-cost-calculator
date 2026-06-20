@@ -17,14 +17,20 @@ import {
   ADA_COST_PER_ROOM,
   ADA_MINIMUM_COST,
   RETENTION_PCT_BY_AGE,
-  OPTIMAL_ROOMS_PER_PERSON,
   THREE_YEAR_MULTIPLIER,
   getRoomMix,
   getInvestmentFromMix,
+  getEc20DirectInvestment,
   defaultConcurrentRooms,
   getPooledPlan,
   MIN_ROOMS_FOR_POOLED_PATH,
 } from "./constants";
+import {
+  type Vertical,
+  type Framing,
+  type ResultMode,
+  getVerticalConfig,
+} from "./verticals";
 
 // ── Input / Output Types ──────────────────────────────────────────────
 
@@ -40,6 +46,10 @@ export interface CalculatorInputs {
   // Peak rooms recording at the same moment. Optional: when omitted,
   // calculate() derives a conservative default from room count.
   concurrentRooms?: number;
+  // Vertical + framing. Optional; default vertical is "higher-ed" so existing
+  // callers (and the 71 baseline tests) behave exactly as before.
+  vertical?: Vertical;
+  framing?: Framing;
 }
 
 export interface CategoryCost {
@@ -105,6 +115,18 @@ export interface CalculatorResults {
   pooledEncoders: number;
   pooledInvestment: number;
   showPooledPath: boolean;
+
+  // EC20 direct-to-CMS ramp (one camera/room, no encoder — phase-1 / new-logo wedge)
+  ec20DirectUnits: number;
+  ec20DirectInvestment: number;
+  showEc20DirectPath: boolean;
+
+  // Vertical context. resultMode "cost" → show full $ (Higher Ed / Community
+  // College); "fit" → show portfolio fit + discovery (Live Events / Corporate /
+  // Broadcast), where dollar drivers are not yet calibrated.
+  vertical: Vertical;
+  framing: Framing;
+  resultMode: ResultMode;
 }
 
 // ── Calculator ────────────────────────────────────────────────────────
@@ -112,6 +134,12 @@ export interface CalculatorResults {
 export function calculate(inputs: CalculatorInputs): CalculatorResults {
   const { rooms, equipmentAge, lecturesPerWeek, teachWeeks, students, tuition, itSalary, currentFTE } = inputs;
   const concurrentRooms = Math.min(rooms, inputs.concurrentRooms ?? defaultConcurrentRooms(rooms));
+
+  // Vertical config drives the few vertical-specific knobs (staffing density,
+  // whether the revenue-at-risk model applies). Default = "higher-ed".
+  const vertical = inputs.vertical ?? "higher-ed";
+  const verticalConfig = getVerticalConfig(vertical);
+  const framing = inputs.framing ?? verticalConfig.defaultFraming;
 
   const totalLectures = rooms * lecturesPerWeek * teachWeeks;
 
@@ -134,7 +162,7 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
 
   // 4. Manual Operation Burden (FTE redeployment)
   const currentRoomsPerPerson = Math.round(rooms / currentFTE);
-  const optimalFTE = Math.max(1, Math.ceil(rooms / OPTIMAL_ROOMS_PER_PERSON));
+  const optimalFTE = Math.max(1, Math.ceil(rooms / verticalConfig.staffOptimalUnitsPerPerson));
   const excessFTE = Math.max(0, currentFTE - optimalFTE);
   const staffCost = excessFTE * itSalary;
 
@@ -147,9 +175,12 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   // 6. ADA Compliance Exposure
   const adaCost = Math.max(ADA_MINIMUM_COST, rooms * ADA_COST_PER_ROOM[equipmentAge]);
 
-  // 7. Student Retention — At-Risk Revenue
+  // 7. Student Retention — At-Risk Revenue (only when the vertical's revenue
+  // model is calibrated; "fit" verticals don't show a dollar total).
   const retentionPercent = RETENTION_PCT_BY_AGE[equipmentAge];
-  const retentionCost = students * retentionPercent * tuition;
+  const retentionCost = verticalConfig.appliesRevenueModel
+    ? students * retentionPercent * tuition
+    : 0;
 
   // Totals
   const annualCost = ticketCost + missedCaptureCost + downtimeCost + staffCost + maintenanceCost + adaCost + retentionCost;
@@ -170,6 +201,14 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   // and where it genuinely beats the room-by-room investment.
   const pooled = getPooledPlan(concurrentRooms);
   const showPooledPath = rooms >= MIN_ROOMS_FOR_POOLED_PATH && pooled.investment < totalInvestment;
+
+  // EC20 direct-to-CMS ramp — one camera per room, no encoder, publishes straight
+  // to the CMS. The simplest "start here" / phase-1 path. A genuine saving vs the
+  // encoder-in-every-room mix; the pool is cheaper still at scale, so this sits
+  // between the two and is framed by purpose (low-barrier entry), not lowest price.
+  const ec20DirectUnits = rooms;
+  const ec20DirectInvestment = getEc20DirectInvestment(rooms);
+  const showEc20DirectPath = ec20DirectInvestment < totalInvestment;
 
   // Category breakdown for rendering — ordered by credibility tier
   // Tier 1: Operational (hard budget costs)
@@ -221,6 +260,12 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
     pooledEncoders: pooled.encoders,
     pooledInvestment: pooled.investment,
     showPooledPath,
+    ec20DirectUnits,
+    ec20DirectInvestment,
+    showEc20DirectPath,
+    vertical,
+    framing,
+    resultMode: verticalConfig.mode,
   };
 }
 
