@@ -1,6 +1,6 @@
 // ── Pipeline Scenarios — real higher-ed deals from Clari sales calls ──────
 //
-// Each entry is a real account that [redacted-rep] or [redacted-rep] worked between
+// Each entry is a real account the field team worked between
 // 2026-02-01 and 2026-06-19, sourced from substantive (connected, summarized)
 // Clari Copilot calls and fed into the Cost-of-Inaction calculator.
 //
@@ -36,8 +36,8 @@ export interface PipelineScenario extends ScenarioPreset {
   callId: string;
   /** Call date (ISO yyyy-mm-dd). */
   callDate: string;
-  /** Primary Epiphan rep on the call. */
-  rep: "[redacted-rep]" | "[redacted-rep]";
+  /** Primary Epiphan rep on the call (redacted in the public repo). */
+  rep: string;
   /** Products discussed on the call. */
   product: string;
   /** One-line cost-of-inaction hook distilled from the call. */

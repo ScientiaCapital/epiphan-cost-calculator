@@ -111,7 +111,7 @@ export async function run(projectRoot: string): Promise<void> {
 
   const md =
     `# Account ROI Pipeline: Higher-Ed Deals from 2026 Sales Calls\n\n` +
-    `Generated ${GENERATED_DATE} from substantive Clari calls worked by [redacted-rep] and [redacted-rep] ` +
+    `Generated ${GENERATED_DATE} from substantive Clari calls worked by the field team ` +
     `(2026-02-01 to 2026-06-19). Each account's deployment size is call-sourced; campus profile fields ` +
     `(students, tuition, FTE, equipment age) are public figures or institution-type estimates, clamped to ` +
     `the calculator's valid ranges. This is a cost-of-inaction / ROI model, not a quote: the recommended ` +
