@@ -51,3 +51,21 @@ out/
 # Cost tracking (ephemeral)
 .claude/daily-cost.json
 costs/*.json
+
+# ===========================================
+# Internal planning / status — LOCAL ONLY (public repo: keep out)
+# ===========================================
+.claude/PROJECT_CONTEXT.md
+.claude/Backlog.md
+.claude/TASK.md
+.claude/PLANNING.md
+.claude/settings.local.json
+.claude/observers/
+
+# Internal strategy + generated deal-data reports (named accounts / reps) — never publish
+docs/plans/
+docs/pipeline/
+
+# Build artifacts
+tsconfig.tsbuildinfo
+*.tsbuildinfo
