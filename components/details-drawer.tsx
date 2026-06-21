@@ -2,6 +2,10 @@
 
 import { useEffect } from "react";
 
+// Slide-in transition duration (matches the `duration-300` on the panel below).
+// Deep-link scroll waits this long + a small buffer so the layout has settled.
+const DRAWER_TRANSITION_MS = 300;
+
 interface DetailsDrawerProps {
   open: boolean;
   title: string;
@@ -29,7 +33,7 @@ export function DetailsDrawer({ open, title, scrollToId, onClose, children }: De
     if (!open || !scrollToId) return;
     const t = setTimeout(() => {
       document.getElementById(scrollToId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 320);
+    }, DRAWER_TRANSITION_MS + 20);
     return () => clearTimeout(t);
   }, [open, scrollToId]);
 

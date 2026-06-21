@@ -152,7 +152,7 @@
   .panel-card {
     background: var(--color-surface-1);
     border: 1px solid var(--color-line);
-    border-radius: 8px;
+    border-radius: var(--radius);
   }
   /* Telemetry / financial figures — brand permits Söhne Mono for data. */
   .mono {

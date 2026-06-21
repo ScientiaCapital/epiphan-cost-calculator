@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { CalculatorInputs, CalculatorResults } from "@/lib/calculator";
 import { getVerticalConfig } from "@/lib/verticals";
-import { AE_BOOKING_URL, PRODUCT_PRICES, NEXUS_EC20_BUNDLE } from "@/lib/constants";
+import { AE_BOOKING_URL } from "@/lib/constants";
 import { generateSdrNote, generateFollowupEmail } from "@/lib/sdr-note";
 
 interface SaySendZoneProps {
@@ -28,7 +28,7 @@ function recommendedStack(r: CalculatorResults): { stack: string; note: string }
     : mix.nexus > 0 ? "Pearl Nexus"
     : mix.nano > 0 ? "Pearl Nano"
     : "Pearl-2";
-  void PRODUCT_PRICES; void NEXUS_EC20_BUNDLE; // pricing detail lives in the drawer
+  // (Per-product pricing detail lives in the Details drawer, not this line.)
   return {
     stack,
     note: "Camera in every room, pool encoders as you grow · Edge fleet mgmt free",

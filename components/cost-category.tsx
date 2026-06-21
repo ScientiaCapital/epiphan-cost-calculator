@@ -30,7 +30,7 @@ export function CostCategory({ name, cost, barColor, maxCost, confidence, id, ch
   return (
     <div
       id={id}
-      style={{ scrollMarginTop: 12 }}
+      style={{ scrollMarginTop: "0.75rem" }}
       className="px-5 py-4 border-b border-surface-2 last:border-b-0 cursor-pointer transition-colors hover:bg-surface-2"
       onClick={() => setOpen(!open)}
     >
