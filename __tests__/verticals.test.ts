@@ -20,18 +20,31 @@ const FORBIDDEN = new RegExp(
 );
 
 describe("VERTICAL_CONFIGS", () => {
-  it("defines exactly the four verticals", () => {
+  it("defines exactly the three verticals", () => {
     expect(Object.keys(VERTICAL_CONFIGS).sort()).toEqual(
-      ["broadcast", "corporate", "higher-ed", "live-events"],
+      ["broadcast", "higher-ed", "live-events"],
     );
   });
 
   it("cost verticals apply the revenue model; fit verticals do not", () => {
     expect(VERTICAL_CONFIGS["higher-ed"].mode).toBe("cost");
     expect(VERTICAL_CONFIGS["higher-ed"].appliesRevenueModel).toBe(true);
-    for (const v of ["live-events", "corporate", "broadcast"] as const) {
+    for (const v of ["live-events", "broadcast"] as const) {
       expect(VERTICAL_CONFIGS[v].mode).toBe("fit");
       expect(VERTICAL_CONFIGS[v].appliesRevenueModel).toBe(false);
+    }
+  });
+
+  it("fit verticals carry an illustrative per-unit figure; the cost vertical does not", () => {
+    expect(VERTICAL_CONFIGS["higher-ed"].illustrative).toBeUndefined();
+    for (const v of ["live-events", "broadcast"] as const) {
+      const ill = VERTICAL_CONFIGS[v].illustrative;
+      expect(ill, v).toBeTruthy();
+      expect(ill!.confidence).toBe("estimated");
+      // every illustrative figure must read as illustrative, never a quote
+      expect(ill!.unitNote.toLowerCase()).toContain("not a quote");
+      const blob = JSON.stringify(ill);
+      expect(blob).not.toMatch(FORBIDDEN);
     }
   });
 

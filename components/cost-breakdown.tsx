@@ -39,7 +39,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </div>
 
         {/* 1. IT Staff Time Wasted */}
-        <CostCategory id="cat-tickets" name="AV Support Tickets" cost={r.ticketCost} barColor="red" maxCost={maxCost}>
+        <CostCategory id="cat-tickets" confidence="asserted" name="AV Support Tickets" cost={r.ticketCost} barColor="red" maxCost={maxCost}>
           Aging encoders and one-off room builds generate <strong className="text-ink-1">{r.ticketsPerRoomYear.toFixed(1)}</strong> tickets/room/year
           at a blended <strong className="text-ink-1">$35/ticket</strong>. That is <strong className="text-ink-1">{r.totalTickets.toLocaleString()}</strong> tickets
           consuming <strong className="text-ink-1">{r.ticketHours.toLocaleString()}</strong> hours/year of your AV and media-services techs, at roughly 45 minutes of hands-on support each.
@@ -48,7 +48,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </CostCategory>
 
         {/* 4. Manual Operation Burden */}
-        <CostCategory id="cat-manual" name="Rooms per Tech: Manual Operation" cost={r.staffCost} barColor="amber" maxCost={maxCost}>
+        <CostCategory id="cat-manual" confidence="asserted" name="Rooms per Tech: Manual Operation" cost={r.staffCost} barColor="amber" maxCost={maxCost}>
           Your team currently covers <strong className="text-ink-1">{r.currentRoomsPerPerson}</strong> rooms/person (the published higher-ed AV benchmark is about 43).
           Cloud-managed fleets move that ratio far higher: NC State runs 300-plus rooms with a core team of three, and UNLV manages 200-plus Pearl Nexus units remotely from one dashboard.
           At that efficiency your <strong className="text-ink-1">{inputs.currentFTE}</strong> AV staff could cover the same campus as <strong className="text-ink-1">{r.optimalFTE}</strong>, freeing <strong className="text-ink-1">{r.excessFTE}</strong> FTEs
@@ -58,7 +58,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </CostCategory>
 
         {/* 5. Configuration & Maintenance Labor */}
-        <CostCategory id="cat-config" name="Configuration & Maintenance Labor" cost={r.maintenanceCost} barColor="blue" maxCost={maxCost}>
+        <CostCategory id="cat-config" confidence="asserted" name="Configuration & Maintenance Labor" cost={r.maintenanceCost} barColor="blue" maxCost={maxCost}>
           Multi-vendor capture and RTSP setup averages <strong className="text-ink-1">{r.configHoursPerRoom.toFixed(1)}</strong> hours/room
           at <strong className="text-ink-1">$55/hr</strong> fully loaded. Legacy appliances force manual, room-by-room firmware updates instead of one fleet action,
           and parts for discontinued capture hardware get scarce and slow as vendors hit end-of-life. Centralized firmware and config (Epiphan Edge) collapses that labor to a few clicks.
@@ -77,7 +77,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </div>
 
         {/* 2. Failed & Missed Captures */}
-        <CostCategory id="cat-captures" name="Failed & Missed Captures" cost={r.missedCaptureCost} barColor="red" maxCost={maxCost}>
+        <CostCategory id="cat-captures" confidence="calibrated" name="Failed & Missed Captures" cost={r.missedCaptureCost} barColor="red" maxCost={maxCost}>
           Every recording that fails to reach your CMS is a faculty complaint and a lost lecture.
           At an estimated <strong className="text-ink-1">{(r.failRate * 100).toFixed(0)}%</strong> failure rate across the <strong className="text-ink-1">70%</strong> of rooms with active recording schedules,
           roughly <strong className="text-ink-1">{r.missedLectures.toLocaleString()}</strong> of <strong className="text-ink-1">{r.totalLectures.toLocaleString()}</strong> scheduled captures/year fail or come back unusable,
@@ -87,7 +87,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </CostCategory>
 
         {/* 3. Classroom Downtime */}
-        <CostCategory id="cat-downtime" name="Classroom Downtime" cost={r.downtimeCost} barColor="amber" maxCost={maxCost}>
+        <CostCategory id="cat-downtime" confidence="calibrated" name="Classroom Downtime" cost={r.downtimeCost} barColor="amber" maxCost={maxCost}>
           Each AV failure that disrupts a class session costs an estimated <strong className="text-ink-1">$500</strong>, a blended average
           of minor incidents (reboot or cable swap, about $100) and major hardware failures (about $2,000-plus).
           IT dispatch (1.5hr at $55), instructor time, rescheduling, and parts drive the base cost.
@@ -108,7 +108,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </div>
 
         {/* 6. ADA Compliance Exposure */}
-        <CostCategory id="cat-ada" name="ADA / Accessibility Compliance Exposure" cost={r.adaCost} barColor="red" maxCost={maxCost}>
+        <CostCategory id="cat-ada" confidence="asserted" name="ADA / Accessibility Compliance Exposure" cost={r.adaCost} barColor="red" maxCost={maxCost}>
           <strong className="text-ink-1">DOJ ADA Title II</strong> requires WCAG 2.1 Level AA for digital content, including lecture recordings:{" "}
           <strong className="text-ink-1">April 24, 2026</strong> for large public institutions (50,000-plus population), April 2027 for smaller ones. Private institutions fall under Title III.{" "}
           An estimated <strong className="text-ink-1">97% of U.S. colleges</strong> still have accessibility gaps, and typical web-accessibility settlements run <strong className="text-ink-1">$5K to $20K</strong> per case (with rare outliers far higher).
@@ -118,7 +118,7 @@ export function CostBreakdown({ inputs, results: r }: CostBreakdownProps) {
         </CostCategory>
 
         {/* 7. Student Retention — At-Risk Revenue */}
-        <CostCategory id="cat-retention" name="Student Retention: At-Risk Revenue" cost={r.retentionCost} barColor="blue" maxCost={maxCost}>
+        <CostCategory id="cat-retention" confidence="estimated" name="Student Retention: At-Risk Revenue" cost={r.retentionCost} barColor="blue" maxCost={maxCost}>
           Reliable access to recorded lectures supports retention, and students retain more from video of the instructor plus slides than from audio-only or no recording.
           One university study saw first-year attrition fall from <strong className="text-ink-1">12.3% to 5%</strong> after it introduced recorded-video instruction.
           A deliberately conservative <strong className="text-ink-1">{(r.retentionPercent * 100).toFixed(2)}%</strong> of students

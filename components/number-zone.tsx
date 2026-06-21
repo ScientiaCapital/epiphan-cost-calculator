@@ -1,8 +1,9 @@
 "use client";
 
 import type { CalculatorResults } from "@/lib/calculator";
-import { formatCurrency, formatCompact } from "@/lib/calculator";
-import { getVerticalConfig } from "@/lib/verticals";
+import { formatCurrency } from "@/lib/calculator";
+import { getVerticalConfig, type Confidence } from "@/lib/verticals";
+import { ConfidenceChip } from "./confidence-chip";
 
 interface NumberZoneProps {
   results: CalculatorResults;
@@ -26,17 +27,33 @@ export function NumberZone({ results: r, rooms, onOpenDetails }: NumberZoneProps
 
   if (r.resultMode !== "cost") {
     const fit = cfg.portfolioFit;
+    const ill = cfg.illustrative;
     return (
       <div className="flex flex-col gap-3 min-h-0 flex-1">
         <div className="panel-card p-5 text-white border-0" style={{ background: "linear-gradient(160deg,var(--color-ink) 0%,var(--color-teal-deep) 100%)" }}>
           <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-aqua">
-            Fit &amp; discovery &middot; {cfg.label}
+            {cfg.label} &middot; discovery mode
           </div>
-          <div className="text-[30px] font-semibold leading-none my-2">Let&rsquo;s scope it</div>
-          <div className="text-[13px] text-indigo-soft">
-            A tailored $ model for this vertical is calibrating &mdash; lead with the fit and the
-            questions that get us there for your {rooms.toLocaleString()} {cfg.labels.unitsLabel.toLowerCase()}.
-          </div>
+          {ill ? (
+            <>
+              <div className="mt-2 mb-1">
+                <ConfidenceChip level={ill.confidence} label={`${ill.chip} · ${ill.unitNote}`} />
+              </div>
+              <div className="mono text-[clamp(30px,3.6vw,42px)] font-semibold tracking-[-0.02em] leading-none my-1.5">
+                {ill.range}
+              </div>
+              <div className="text-[12px] text-indigo-soft">illustrative, {ill.unitWord}</div>
+              <p className="text-[12.5px] text-indigo-soft mt-3 leading-relaxed">{ill.note}</p>
+            </>
+          ) : (
+            <>
+              <div className="text-[30px] font-semibold leading-none my-2">Let&rsquo;s scope it</div>
+              <div className="text-[13px] text-indigo-soft">
+                A tailored $ model for this vertical is calibrating &mdash; lead with the fit and the
+                questions that get us there for your {rooms.toLocaleString()} {cfg.labels.unitsLabel.toLowerCase()}.
+              </div>
+            </>
+          )}
         </div>
         <div className="panel-card p-4 flex-1 min-h-0 overflow-auto">
           <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink-4 mb-2">Recommended fit</div>
@@ -45,46 +62,57 @@ export function NumberZone({ results: r, rooms, onOpenDetails }: NumberZoneProps
             {fit.software.map((s) => <li key={s} className="text-teal">{s}</li>)}
           </ul>
           <p className="text-[12px] text-ink-4 italic mt-3">{fit.note}</p>
+          <p className="text-[11px] text-ink-4 mt-3">Run the discovery prompts in Operate, then capture answers into the note.</p>
         </div>
       </div>
     );
   }
 
   const drivers = ([
-    { name: "Student retention revenue", cost: r.retentionCost, tier: "institutional", anchor: "cat-retention" },
-    { name: "Failed & missed captures", cost: r.missedCaptureCost, tier: "productivity", anchor: "cat-captures" },
-    { name: "Classroom downtime", cost: r.downtimeCost, tier: "productivity", anchor: "cat-downtime" },
-    { name: "Manual operation", cost: r.staffCost, tier: "operational", anchor: "cat-manual" },
-    { name: "Configuration & maint. labor", cost: r.maintenanceCost, tier: "operational", anchor: "cat-config" },
-    { name: "ADA compliance exposure", cost: r.adaCost, tier: "institutional", anchor: "cat-ada" },
-    { name: "AV support tickets", cost: r.ticketCost, tier: "operational", anchor: "cat-tickets" },
-  ] as { name: string; cost: number; tier: Tier; anchor: string }[])
+    { name: "Student retention revenue", cost: r.retentionCost, tier: "institutional", anchor: "cat-retention", conf: "estimated" },
+    { name: "Failed & missed captures", cost: r.missedCaptureCost, tier: "productivity", anchor: "cat-captures", conf: "calibrated" },
+    { name: "Classroom downtime", cost: r.downtimeCost, tier: "productivity", anchor: "cat-downtime", conf: "calibrated" },
+    { name: "Manual operation", cost: r.staffCost, tier: "operational", anchor: "cat-manual", conf: "asserted" },
+    { name: "Configuration & maint. labor", cost: r.maintenanceCost, tier: "operational", anchor: "cat-config", conf: "asserted" },
+    { name: "ADA compliance exposure", cost: r.adaCost, tier: "institutional", anchor: "cat-ada", conf: "asserted" },
+    { name: "AV support tickets", cost: r.ticketCost, tier: "operational", anchor: "cat-tickets", conf: "asserted" },
+  ] as { name: string; cost: number; tier: Tier; anchor: string; conf: Confidence }[])
     .filter((d) => d.cost > 0)
     .sort((a, b) => b.cost - a.cost);
-  const maxCost = Math.max(...drivers.map((d) => d.cost), 1);
 
   return (
     <div className="flex flex-col gap-3 min-h-0 flex-1">
-      {/* Hero */}
+      {/* Hero — floor-led. Lead with the defensible operational floor; show the
+          single-study retention layer as a subordinate at-risk line; full
+          exposure reads underneath. */}
       <div className="panel-card p-5 text-white border-0" style={{ background: "linear-gradient(160deg,var(--color-ink) 0%,var(--color-teal-deep) 100%)" }}>
         <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-green">
           Annual cost of inaction &middot; {cfg.label}
         </div>
-        <div className="mono text-[clamp(38px,4.4vw,54px)] font-semibold tracking-[-0.03em] leading-none my-1.5">
-          {formatCurrency(r.annualCost)}
+        <div className="mono text-[clamp(36px,4.2vw,52px)] font-semibold tracking-[-0.03em] leading-none my-1.5">
+          {formatCurrency(r.annualCostExRetention)}
         </div>
-        <div className="text-[13px] text-indigo-soft">
-          <b className="text-green font-semibold">{formatCurrency(r.threeYearCost)}</b> over 3 years &middot; money already being spent
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span className="text-[12px] text-indigo-soft">operational floor</span>
+          <ConfidenceChip level="calibrated" label="mostly calibrated" />
         </div>
-        <div className="flex gap-2.5 mt-4">
-          <div className="flex-1 bg-white/[0.06] border border-white/10 rounded-md px-3 py-2.5">
-            <div className="mono text-[20px] font-semibold">{r.hoursReclaimed.toLocaleString()}</div>
-            <div className="text-[10px] text-indigo-soft uppercase tracking-[0.06em] mt-0.5">IT hours saved / yr</div>
+
+        {r.retentionCost > 0 && (
+          <div className="flex items-baseline gap-2.5 flex-wrap mt-3 pt-3 border-t border-dashed border-white/15">
+            <span className="text-[12.5px] text-coral font-semibold">+ revenue at risk</span>
+            <span className="mono text-[18px] text-coral">{formatCurrency(r.retentionCost)}</span>
+            <ConfidenceChip level="estimated" label="single study" />
           </div>
-          <div className="flex-1 bg-white/[0.06] border border-white/10 rounded-md px-3 py-2.5">
-            <div className="mono text-[20px] font-semibold">{formatCompact(r.missedLectures)}</div>
-            <div className="text-[10px] text-indigo-soft uppercase tracking-[0.06em] mt-0.5">failed recordings prevented</div>
-          </div>
+        )}
+
+        <div className="flex items-baseline gap-2.5 mt-3 pt-3 border-t border-white/25">
+          <span className="mono text-[22px] font-semibold">{formatCurrency(r.annualCost)}</span>
+          <span className="text-[10px] uppercase tracking-[0.06em] text-indigo-soft">full exposure</span>
+        </div>
+        <div className="flex gap-4 mt-3 text-[12px] text-indigo-soft">
+          <span>3-year <b className="text-white font-semibold mono">{formatCurrency(r.threeYearCost)}</b></span>
+          <span>payback <b className="text-white font-semibold mono">{r.paybackMonths} mo</b></span>
+          <span>ROI <b className="text-white font-semibold mono">{r.roi3Year}%</b></span>
         </div>
       </div>
 
@@ -98,16 +126,14 @@ export function NumberZone({ results: r, rooms, onOpenDetails }: NumberZoneProps
           {drivers.map((d) => (
             <button
               key={d.name} onClick={() => onOpenDetails(d.anchor)}
-              className="w-full grid grid-cols-[150px_1fr_auto] items-center gap-3 px-2 py-1.5 rounded-md hover:bg-surface-2 transition-colors text-left cursor-pointer"
+              className="w-full grid grid-cols-[1fr_auto_auto] items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-surface-2 transition-colors text-left cursor-pointer"
             >
-              <span className="text-[12.5px] text-ink-2 truncate flex items-center gap-2">
+              <span className="text-[12.5px] text-ink-2 truncate flex items-center gap-2 min-w-0">
                 <span className="w-[7px] h-[7px] rounded-[2px] inline-block flex-none" style={{ background: TIER_VAR[d.tier] }} />
-                {d.name}
-              </span>
-              <span className="h-[9px] bg-surface-2 rounded-full overflow-hidden">
-                <span className="block h-full rounded-full" style={{ width: `${(d.cost / maxCost) * 100}%`, background: TIER_VAR[d.tier] }} />
+                <span className="truncate">{d.name}</span>
               </span>
               <span className="text-[13px] font-semibold text-ink-1 text-right min-w-[74px] mono">{formatCurrency(d.cost)}</span>
+              <ConfidenceChip level={d.conf} />
             </button>
           ))}
         </div>

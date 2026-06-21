@@ -9,52 +9,47 @@ interface VerticalBarProps {
   onSelect: (partial: Partial<CalculatorInputs>) => void;
 }
 
+// Flat, priority-ordered row in declaration order (Higher Ed first, then the
+// fit verticals). Each button carries a mode tag — "cost model" vs "fit" — so
+// the calibrated-vs-discovery signal survives without a lopsided two-group split.
 const VERTICALS = Object.values(VERTICAL_CONFIGS);
-
-// Two natural groups, derived from each vertical's result mode so the split
-// stays in lock-step with the cost engine: "cost" = calibrated academic dollar
-// model, "fit" = positioning/discovery. A future vertical sorts itself here.
-const ACADEMIC = VERTICALS.filter((c) => c.mode === "cost");
-const OTHER = VERTICALS.filter((c) => c.mode === "fit");
-
-const GROUP_CAPTION = "text-[11px] font-semibold uppercase tracking-wide text-ink-3";
 
 /** Vertical selector + framing toggle. Selecting a vertical also resets framing
  *  to that vertical's natural default (aging vs greenfield). */
 export function VerticalBar({ vertical, framing, onSelect }: VerticalBarProps) {
   const renderButton = (c: (typeof VERTICALS)[number]) => {
     const active = c.id === vertical;
+    const isCost = c.mode === "cost";
     return (
       <button
         key={c.id}
         type="button"
         aria-pressed={active}
         onClick={() => onSelect({ vertical: c.id, framing: c.defaultFraming })}
-        className={`flex-1 min-w-0 py-2 px-2 text-[11px] font-bold uppercase tracking-wide border-2 rounded-md cursor-pointer text-center transition-all ${
-          active
-            ? "border-green bg-green-tint text-ink"
-            : "border-line bg-white hover:border-green"
+        className={`w-full flex items-center justify-between gap-2 py-2 px-3 border-2 rounded-md cursor-pointer text-left transition-all ${
+          active ? "border-green bg-green-tint" : "border-line bg-white hover:border-green"
         }`}
       >
-        {c.label}
+        <span className={`text-[13px] font-semibold ${active ? "text-teal-deep" : "text-ink-1"}`}>{c.label}</span>
+        <span
+          className={`text-[10px] font-semibold uppercase tracking-wide rounded px-1.5 py-0.5 border ${
+            active
+              ? isCost
+                ? "bg-teal text-white border-teal"
+                : "bg-slate text-white border-slate"
+              : "border-line text-ink-4"
+          }`}
+        >
+          {isCost ? "cost model" : "fit"}
+        </span>
       </button>
     );
   };
 
   return (
     <div className="mb-4">
-      <div className="mb-3">
-        <span className={GROUP_CAPTION}>Academic — full cost model</span>
-        <div role="group" aria-label="Academic verticals" className="flex flex-wrap gap-2 mt-1">
-          {ACADEMIC.map(renderButton)}
-        </div>
-      </div>
-
-      <div>
-        <span className={GROUP_CAPTION}>Other — fit &amp; discovery</span>
-        <div role="group" aria-label="Other verticals" className="flex flex-wrap gap-2 mt-1">
-          {OTHER.map(renderButton)}
-        </div>
+      <div role="group" aria-label="Vertical" className="flex flex-col gap-2">
+        {VERTICALS.map(renderButton)}
       </div>
 
       <div className="mt-3">

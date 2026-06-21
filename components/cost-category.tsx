@@ -2,12 +2,16 @@
 
 import { useState } from "react";
 import { formatCurrency } from "@/lib/calculator";
+import type { Confidence } from "@/lib/verticals";
+import { ConfidenceChip } from "./confidence-chip";
 
 interface CostCategoryProps {
   name: string;
   cost: number;
   barColor: "red" | "amber" | "blue";
   maxCost: number;
+  /** How defensible this driver is — shown as a chip next to the figure. */
+  confidence?: Confidence;
   /** Anchor id so the cockpit can deep-link a driver row to this category. */
   id?: string;
   children: React.ReactNode;
@@ -19,7 +23,7 @@ const BAR_COLORS = {
   blue: "bg-teal",
 };
 
-export function CostCategory({ name, cost, barColor, maxCost, id, children }: CostCategoryProps) {
+export function CostCategory({ name, cost, barColor, maxCost, confidence, id, children }: CostCategoryProps) {
   const [open, setOpen] = useState(false);
   const barWidth = maxCost > 0 ? (cost / maxCost) * 100 : 0;
 
@@ -41,8 +45,9 @@ export function CostCategory({ name, cost, barColor, maxCost, id, children }: Co
           </span>
           {name}
         </div>
-        <div className="font-bold text-[16px] text-ink whitespace-nowrap">
-          {formatCurrency(cost)}
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          {confidence && <ConfidenceChip level={confidence} />}
+          <span className="font-bold text-[16px] text-ink">{formatCurrency(cost)}</span>
         </div>
       </div>
 

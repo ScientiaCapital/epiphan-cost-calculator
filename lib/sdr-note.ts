@@ -23,7 +23,7 @@ function topCategories(results: CalculatorResults, n: number): string[] {
 /**
  * A clean note for HubSpot / Nooks / Google Docs. The cost vertical (Higher
  * Education — flagships through budget-constrained two-year colleges) gets the
- * dollar story; fit verticals (Live Events, Corporate, Broadcast) get the
+ * dollar story; fit verticals (Live Events, Broadcast) get the
  * recommended portfolio + discovery angles instead of an un-calibrated number.
  */
 export function generateSdrNote(

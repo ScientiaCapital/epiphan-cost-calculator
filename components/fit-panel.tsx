@@ -9,9 +9,9 @@ interface FitPanelProps {
   results: CalculatorResults;
 }
 
-/** Results view for "fit" verticals (Live Events, Corporate, Broadcast): show the
- *  recommended portfolio + discovery angles instead of an un-calibrated dollar
- *  figure. No invented numbers — that's the guardrail. */
+/** Results view for "fit" verticals (Live Events, Broadcast): show the
+ *  recommended portfolio + discovery angles, plus the one illustrative per-unit
+ *  figure where we have it. No invented annual totals — that's the guardrail. */
 export function FitPanel({ inputs, results }: FitPanelProps) {
   const cfg = getVerticalConfig(results.vertical);
   const fit = cfg.portfolioFit;
