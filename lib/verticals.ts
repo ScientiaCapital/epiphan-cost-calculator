@@ -1,12 +1,12 @@
 // ── Vertical Configuration ──────────────────────────────────────────────
-// One cost engine, five verticals. The calculator stays vertical-agnostic;
+// One cost engine, four verticals. The calculator stays vertical-agnostic;
 // everything vertical-specific (labels, whether a revenue-at-risk model applies,
 // staffing density, recommended portfolio, personas) lives here as data.
 //
 // Two result modes:
-//   • "cost" — Higher Ed & Community College: the academic drivers (lectures,
-//     tuition, students, retention) are calibrated, so we show full $ cost-of-
-//     inaction math.
+//   • "cost" — Higher Education (R1 flagships through budget-constrained two-year
+//     colleges): the academic drivers (lectures, tuition, students, retention) are
+//     calibrated, so we show full $ cost-of-inaction math.
 //   • "fit"  — Live Events, Corporate, Broadcast: no academic drivers and the
 //     per-vertical cost drivers are NOT yet calibrated, so we show product fit +
 //     positioning + discovery angles instead of an invented dollar figure.
@@ -22,7 +22,6 @@
 
 export type Vertical =
   | "higher-ed"
-  | "community-college"
   | "live-events"
   | "corporate"
   | "broadcast";
@@ -64,6 +63,9 @@ export interface VerticalConfig {
 }
 
 export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
+  // Higher Education spans R1 flagships through budget-constrained two-year /
+  // community colleges — one calibrated academic cost model, two budget realities.
+  // The EC20-direct "lowest-barrier" wedge below is the community-college on-ramp.
   "higher-ed": {
     id: "higher-ed",
     label: "Higher Education",
@@ -74,53 +76,32 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
     labels: {
       profileTitle: "Your Campus Profile",
       unitsLabel: "AV-Equipped Rooms",
-      unitsHint: "Classrooms, lecture halls, labs, studios",
+      unitsHint: "Classrooms, lecture halls, labs, distance-ed spaces",
       audienceLabel: "Enrolled Students",
       revenueLabel: "Avg Annual Tuition ($)",
     },
     portfolioFit: {
       hardware: ["Pearl Nano", "Pearl Nexus", "EC20", "Pearl-2"],
       software: ["Epiphan Edge — free remote fleet management"],
-      note: "Standardize capture across rooms; manage the whole fleet free in Edge.",
+      note: "Standardize capture across every room and manage the whole fleet free in Edge — or start lowest-barrier with EC20 straight to your CMS, no encoder, and pool encoders as you grow.",
     },
     discoveryFocus: [
       "Aging-gear ticket load",
       "Failed captures → faculty trust",
       "Rooms per tech",
+      "Budget ceiling & phased rollout",
     ],
     personas: {
-      atl: ["Director of AV / Media Services", "Head of Instructional Technology"],
-      btl: ["Manager, Classroom/Media Services Technology", "AV/Media Systems Engineer"],
-    },
-  },
-
-  "community-college": {
-    id: "community-college",
-    label: "Community College",
-    mode: "cost",
-    defaultFraming: "aging",
-    appliesRevenueModel: true,
-    staffOptimalUnitsPerPerson: 100,
-    labels: {
-      profileTitle: "Your Campus Profile",
-      unitsLabel: "AV-Equipped Rooms",
-      unitsHint: "Classrooms, labs, distance-ed spaces",
-      audienceLabel: "Enrolled Students",
-      revenueLabel: "Avg Annual Tuition ($)",
-    },
-    portfolioFit: {
-      hardware: ["EC20", "Pearl Nexus"],
-      software: ["Epiphan Edge — free remote fleet management"],
-      note: "Lowest-barrier start: EC20 publishes straight to your CMS with no encoder; pool encoders as you grow.",
-    },
-    discoveryFocus: [
-      "Budget ceiling & who signs",
-      "A camera in every room without encoder cost",
-      "Phased rollout (ph1 / ph2 / ph3)",
-    ],
-    personas: {
-      atl: ["Director/Manager of Media Services or Distance Education"],
-      btl: ["AV Coordinator", "Media Services Tech", "Distance-Ed Technologist"],
+      atl: [
+        "Director of AV / Media Services or Distance Education",
+        "Head of Instructional Technology",
+      ],
+      btl: [
+        "Manager, Classroom/Media Services Technology",
+        "AV/Media Systems Engineer",
+        "AV Coordinator",
+        "Distance-Ed Technologist",
+      ],
     },
   },
 

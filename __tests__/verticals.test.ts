@@ -20,16 +20,15 @@ const FORBIDDEN = new RegExp(
 );
 
 describe("VERTICAL_CONFIGS", () => {
-  it("defines exactly the five verticals", () => {
+  it("defines exactly the four verticals", () => {
     expect(Object.keys(VERTICAL_CONFIGS).sort()).toEqual(
-      ["broadcast", "community-college", "corporate", "higher-ed", "live-events"],
+      ["broadcast", "corporate", "higher-ed", "live-events"],
     );
   });
 
   it("cost verticals apply the revenue model; fit verticals do not", () => {
     expect(VERTICAL_CONFIGS["higher-ed"].mode).toBe("cost");
     expect(VERTICAL_CONFIGS["higher-ed"].appliesRevenueModel).toBe(true);
-    expect(VERTICAL_CONFIGS["community-college"].mode).toBe("cost");
     for (const v of ["live-events", "corporate", "broadcast"] as const) {
       expect(VERTICAL_CONFIGS[v].mode).toBe("fit");
       expect(VERTICAL_CONFIGS[v].appliesRevenueModel).toBe(false);
