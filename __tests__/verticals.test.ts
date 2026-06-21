@@ -57,6 +57,13 @@ describe("calculate() vertical behavior", () => {
     expect(r.retentionCost).toBe(0);
   });
 
+  it("ex-retention totals equal the full totals when no revenue model applies", () => {
+    const r = calcWith({ vertical: "live-events" });
+    expect(r.annualCostExRetention).toBe(r.annualCost);
+    expect(r.threeYearCostExRetention).toBe(r.threeYearCost);
+    expect(r.retentionShareOfAnnual).toBe(0);
+  });
+
   it("staff scaling comes from the vertical config", () => {
     // live-events density = 5 units/person → optimalFTE = ceil(150/5) = 30
     expect(calcWith({ vertical: "live-events" }).optimalFTE).toBe(30);

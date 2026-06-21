@@ -52,7 +52,11 @@ export interface VerticalConfig {
   // When true the retention revenue-at-risk model (students × pct × tuition)
   // applies. Only the calibrated academic verticals set this.
   appliesRevenueModel: boolean;
-  // Benchmark deployment density for the staffing category (units per person).
+  // Aspirational deployment density for the staffing category (units per person)
+  // — "what best-in-class looks like," not the norm. For Higher Ed, 100 is the
+  // cloud-managed ceiling (NC State, ~n=1); the published norm is ≈43, which the
+  // UI surfaces as the comparison anchor. This is the redeployment-opportunity
+  // target, deliberately optimistic.
   staffOptimalUnitsPerPerson: number;
   labels: VerticalLabels;
   portfolioFit: PortfolioFit;

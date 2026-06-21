@@ -18,6 +18,7 @@ import {
   ADA_MINIMUM_COST,
   RETENTION_PCT_BY_AGE,
   THREE_YEAR_MULTIPLIER,
+  THREE_YEAR_FLAT_MULTIPLIER,
   getRoomMix,
   getInvestmentFromMix,
   getEc20DirectInvestment,
@@ -62,6 +63,10 @@ export interface CalculatorResults {
   // Totals
   annualCost: number;
   threeYearCost: number;
+  // Conservative totals with the single-study retention layer (#7) removed.
+  annualCostExRetention: number;
+  threeYearCostExRetention: number;
+  retentionShareOfAnnual: number;
 
   // Per-category costs
   ticketCost: number;
@@ -184,7 +189,19 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
 
   // Totals
   const annualCost = ticketCost + missedCaptureCost + downtimeCost + staffCost + maintenanceCost + adaCost + retentionCost;
-  const threeYearCost = annualCost * THREE_YEAR_MULTIPLIER;
+
+  // 3-year horizon: age-driven operational costs escalate (×3.15); ADA exposure
+  // and retention revenue-at-risk are flat annual figures (×3, no escalation).
+  const escalatingAnnual = ticketCost + missedCaptureCost + downtimeCost + staffCost + maintenanceCost;
+  const flatAnnual = adaCost + retentionCost;
+  const threeYearCost = escalatingAnnual * THREE_YEAR_MULTIPLIER + flatAnnual * THREE_YEAR_FLAT_MULTIPLIER;
+
+  // Conservative view: the cost of inaction with the single-study retention
+  // layer (#7) removed. Retention can be ~40%+ of the HE headline on a single
+  // study, so expose the ex-retention totals for a "lead with the floor" toggle.
+  const annualCostExRetention = annualCost - retentionCost;
+  const threeYearCostExRetention = threeYearCost - retentionCost * THREE_YEAR_FLAT_MULTIPLIER;
+  const retentionShareOfAnnual = annualCost > 0 ? retentionCost / annualCost : 0;
 
   // Hours reclaimed = ticket handling hours + config labor hours
   const hoursReclaimed = ticketHours + Math.round(rooms * configHoursPerRoom);
@@ -227,6 +244,9 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   return {
     annualCost,
     threeYearCost,
+    annualCostExRetention,
+    threeYearCostExRetention,
+    retentionShareOfAnnual,
     ticketCost,
     missedCaptureCost,
     downtimeCost,
