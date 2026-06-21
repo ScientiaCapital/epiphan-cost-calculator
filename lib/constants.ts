@@ -71,7 +71,10 @@ export const PARTS_COST_PER_ROOM: AgeMultiplierTable = {
 export const IT_HOURLY_RATE = 55; // fully loaded IT cost
 
 // ── ADA / Accessibility Compliance ────────────────────────────────────
-// 3Play Media / AudioEye: 97% gap, $27K avg settlement
+// Per-room captioning/remediation labor exposure, scaled by equipment age
+// (older gear → more manual caption fixes, worse source quality). Anchored to
+// the ADA Title II video-accessibility deadline for large public institutions
+// (April 2026), which makes remediation a budgeted line, not a hypothetical.
 export const ADA_COST_PER_ROOM: AgeMultiplierTable = {
   "3": 80,
   "5": 200,
@@ -79,6 +82,9 @@ export const ADA_COST_PER_ROOM: AgeMultiplierTable = {
   "10": 750,
 };
 
+// Floor = aggregate annual fleet remediation/captioning exposure for a campus,
+// NOT a single lawsuit settlement. (The prior "$27K avg settlement" note was
+// unsourced and is removed — do not reintroduce a per-case figure.)
 export const ADA_MINIMUM_COST = 25000;
 
 // ── Student Retention ─────────────────────────────────────────────────
@@ -93,8 +99,13 @@ export const RETENTION_PCT_BY_AGE: AgeMultiplierTable = {
 };
 
 // ── Staff Efficiency ──────────────────────────────────────────────────
-// NC State: 300+ rooms with team of 3 — benchmark for cloud-managed
-// Collegis Education / OculusIT benchmarks
+// ASPIRATIONAL cloud-managed ceiling, NOT the typical norm: 100 rooms/person
+// is best-in-class (NC State, 300+ rooms / team of 3 — effectively n=1). The
+// published higher-ed AV staffing norm is ≈43 rooms/person (Campus Technology),
+// which the UI shows as the comparison anchor. Treat 100 as "what great looks
+// like," not the median.
+// NOTE: unused — the live per-vertical density is `staffOptimalUnitsPerPerson`
+// in lib/verticals.ts. Kept here only as the documented sourcing reference.
 export const OPTIMAL_ROOMS_PER_PERSON = 100;
 
 // ── Product Pricing ──────────────────────────────────────────────────
@@ -231,8 +242,14 @@ export function getPooledPlan(concurrentRooms: number): PooledPlan {
   return best as PooledPlan;
 }
 
-// 3-year escalation factor (maintenance costs grow over time)
+// 3-year horizon factors. Age-driven operational costs (tickets, missed
+// captures, downtime, staffing, config/parts) compound as the gear keeps aging
+// — modeled as ~5%/yr escalation over 3 years (1 + 1.05 + 1.10 ≈ 3.15).
 export const THREE_YEAR_MULTIPLIER = 3.15;
+// ADA exposure and student-retention revenue-at-risk are flat annual figures,
+// not compounding maintenance — they accrue a plain 3 years, no escalation.
+// Applying the 3.15 escalation to them would overstate the 3-year headline.
+export const THREE_YEAR_FLAT_MULTIPLIER = 3;
 
 // Booking link for the "Talk to an Epiphan AE" CTA. Single source of truth so a
 // routing change is a one-line edit, not a hunt through component JSX.

@@ -44,20 +44,20 @@ export function Methodology() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 bg-[#f5f5f5] rounded-lg text-[13px] font-semibold text-[#5a5a5a] hover:bg-[#eeeeee] transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between p-4 bg-surface-2 rounded-lg text-[13px] font-semibold text-ink-3 hover:bg-line transition-colors cursor-pointer"
       >
         <span>Methodology &amp; Sources</span>
         <span className="text-[16px]">{open ? "\u25B4" : "\u25BE"}</span>
       </button>
 
       {open && (
-        <div className="bg-[#f5f5f5] rounded-b-lg px-5 pb-5 -mt-1">
+        <div className="bg-surface-2 rounded-b-lg px-5 pb-5 -mt-1">
           {/* Section 1: How We Calculate */}
           <div className="mb-4">
-            <h4 className="text-[13px] font-bold text-[#424242] mb-1">
+            <h4 className="text-[13px] font-bold text-ink-2 mb-1">
               How We Calculate
             </h4>
-            <p className="text-[12px] text-[#5a5a5a] leading-relaxed">
+            <p className="text-[12px] text-ink-3 leading-relaxed">
               Our model estimates the hidden annual cost of maintaining aging AV
               infrastructure across three tiers: operational costs (support tickets,
               excess staffing, configuration labor), productivity impact (capture
@@ -69,11 +69,11 @@ export function Methodology() {
 
           {/* Section 2: Sources */}
           <div className="mb-4">
-            <h4 className="text-[13px] font-bold text-[#424242] mb-2">
+            <h4 className="text-[13px] font-bold text-ink-2 mb-2">
               Sources
             </h4>
-            <div className="border border-[#e0e0e0] rounded overflow-hidden">
-              <div className="grid grid-cols-[140px_1fr_1fr] bg-[#e0e0e0] text-[10px] font-bold text-[#424242] uppercase tracking-wide">
+            <div className="border border-line rounded overflow-hidden">
+              <div className="grid grid-cols-[140px_1fr_1fr] bg-line text-[10px] font-bold text-ink-2 uppercase tracking-wide">
                 <div className="px-2.5 py-1.5">Category</div>
                 <div className="px-2.5 py-1.5">Source</div>
                 <div className="px-2.5 py-1.5">Detail</div>
@@ -81,11 +81,11 @@ export function Methodology() {
               {SOURCES.map((row, i) => (
                 <div
                   key={row.category}
-                  className={`grid grid-cols-[140px_1fr_1fr] text-[11px] text-[#5a5a5a] ${
-                    i % 2 === 0 ? "bg-white" : "bg-[#fafafa]"
+                  className={`grid grid-cols-[140px_1fr_1fr] text-[11px] text-ink-3 ${
+                    i % 2 === 0 ? "bg-white" : "bg-surface-2"
                   }`}
                 >
-                  <div className="px-2.5 py-1.5 font-semibold text-[#424242]">
+                  <div className="px-2.5 py-1.5 font-semibold text-ink-2">
                     {row.category}
                   </div>
                   <div className="px-2.5 py-1.5">{row.source}</div>
@@ -97,10 +97,10 @@ export function Methodology() {
 
           {/* Section 3: Reference Deployments */}
           <div className="mb-4">
-            <h4 className="text-[13px] font-bold text-[#424242] mb-1">
+            <h4 className="text-[13px] font-bold text-ink-2 mb-1">
               Reference Deployments
             </h4>
-            <ul className="text-[12px] text-[#5a5a5a] space-y-0.5">
+            <ul className="text-[12px] text-ink-3 space-y-0.5">
               {DEPLOYMENTS.map((d) => (
                 <li key={d}>&#8226; {d}</li>
               ))}
@@ -108,7 +108,7 @@ export function Methodology() {
           </div>
 
           {/* Section 4: Disclaimer */}
-          <p className="text-[11px] text-[#757575] italic leading-relaxed">
+          <p className="text-[11px] text-ink-3 italic leading-relaxed">
             Figures represent conservative estimates. Actual exposure may vary
             based on institutional factors.
             {date && <> Generated {date}.</>}

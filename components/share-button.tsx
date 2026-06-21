@@ -46,7 +46,7 @@ export function ShareButton({ inputs }: ShareButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className="mt-5 w-full py-3 px-4 bg-[#170F30] text-white font-semibold text-[14px] rounded-lg hover:bg-[#2A1E50] transition-colors cursor-pointer flex items-center justify-center gap-2"
+      className="mt-5 w-full py-3 px-4 bg-ink text-white font-semibold text-[14px] rounded-lg hover:bg-ink-deep transition-colors cursor-pointer flex items-center justify-center gap-2"
     >
       {copied ? (
         <>&#10003; Link Copied. Send It</>

@@ -65,6 +65,7 @@ costs/*.json
 # Internal strategy + generated deal-data reports (named accounts / reps) — never publish
 docs/plans/
 docs/pipeline/
+docs/research/
 
 # Build artifacts
 tsconfig.tsbuildinfo

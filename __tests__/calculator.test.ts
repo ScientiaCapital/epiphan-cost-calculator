@@ -91,10 +91,37 @@ describe("calculate()", () => {
       expect(r.retentionCost).toBe(660000);
     });
 
-    it("computes annual and 3-year totals", () => {
+    it("computes annual and 3-year totals (escalation scoped off ADA + retention)", () => {
       const expectedAnnual = 24150 + 425250 + 187500 + 170000 + 43125 + 30000 + 660000;
       expect(r.annualCost).toBe(expectedAnnual); // $1,540,025
-      expect(r.threeYearCost).toBe(expectedAnnual * 3.15);
+      // Age-driven operational costs escalate (~5%/yr) over 3 years → ×3.15.
+      // ADA exposure + retention revenue-at-risk are flat annual figures, not
+      // compounding maintenance, so they accrue a flat ×3 — not ×3.15.
+      const escalating = 24150 + 425250 + 187500 + 170000 + 43125; // 850,025
+      const flat = 30000 + 660000; // ADA + retention = 690,000
+      expect(r.threeYearCost).toBe(escalating * 3.15 + flat * 3);
+    });
+
+    it("tags each cost category with a confidence level", () => {
+      const byName = Object.fromEntries(r.categories.map((c) => [c.name, c.confidence]));
+      // calibrated: conservative bottom-ups anchored to real benchmarks
+      expect(byName["Failed & Missed Captures"]).toBe("calibrated");
+      expect(byName["Classroom Downtime"]).toBe("calibrated");
+      // estimated: single-study revenue-at-risk
+      expect(byName["Student Retention — At-Risk Revenue"]).toBe("estimated");
+      // asserted: internal-only multipliers
+      expect(byName["IT Staff Time Wasted"]).toBe("asserted");
+      expect(byName["ADA / Accessibility Compliance Exposure"]).toBe("asserted");
+      expect(byName["Manual Operation Burden"]).toBe("asserted");
+    });
+
+    it("exposes cost-of-inaction without the single-study retention layer", () => {
+      // Retention (#7) carries ~40%+ of the HE headline on a single-study basis;
+      // expose the conservative ex-retention totals so the UI can lead with them.
+      expect(r.annualCostExRetention).toBe(r.annualCost - r.retentionCost);
+      expect(r.threeYearCostExRetention).toBe(r.threeYearCost - r.retentionCost * 3);
+      expect(r.retentionShareOfAnnual).toBeGreaterThan(0.4);
+      expect(r.retentionShareOfAnnual).toBeLessThan(0.45);
     });
 
     it("computes hours reclaimed", () => {

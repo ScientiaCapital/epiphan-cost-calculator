@@ -8,7 +8,7 @@ const soehne = localFont({
     { path: "./fonts/soehne-buch.otf", weight: "400", style: "normal" },
     { path: "./fonts/soehne-halbfett.otf", weight: "600", style: "normal" },
   ],
-  variable: "--font-geist-sans",
+  variable: "--font-soehne",
   display: "swap",
 });
 

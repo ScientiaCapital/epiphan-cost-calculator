@@ -16,7 +16,7 @@ const PdfDownloadButtonInner = dynamic(
     loading: () => (
       <button
         disabled
-        className="mt-3 w-full py-3 px-4 bg-[#170F30] text-white font-semibold text-[14px] rounded-lg opacity-60 cursor-not-allowed flex items-center justify-center gap-2"
+        className="mt-3 w-full py-3 px-4 bg-ink text-white font-semibold text-[14px] rounded-lg opacity-60 cursor-not-allowed flex items-center justify-center gap-2"
       >
         Preparing PDF...
       </button>

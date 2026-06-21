@@ -20,19 +20,31 @@ const FORBIDDEN = new RegExp(
 );
 
 describe("VERTICAL_CONFIGS", () => {
-  it("defines exactly the five verticals", () => {
+  it("defines exactly the three verticals", () => {
     expect(Object.keys(VERTICAL_CONFIGS).sort()).toEqual(
-      ["broadcast", "community-college", "corporate", "higher-ed", "live-events"],
+      ["broadcast", "higher-ed", "live-events"],
     );
   });
 
   it("cost verticals apply the revenue model; fit verticals do not", () => {
     expect(VERTICAL_CONFIGS["higher-ed"].mode).toBe("cost");
     expect(VERTICAL_CONFIGS["higher-ed"].appliesRevenueModel).toBe(true);
-    expect(VERTICAL_CONFIGS["community-college"].mode).toBe("cost");
-    for (const v of ["live-events", "corporate", "broadcast"] as const) {
+    for (const v of ["live-events", "broadcast"] as const) {
       expect(VERTICAL_CONFIGS[v].mode).toBe("fit");
       expect(VERTICAL_CONFIGS[v].appliesRevenueModel).toBe(false);
+    }
+  });
+
+  it("fit verticals carry an illustrative per-unit figure; the cost vertical does not", () => {
+    expect(VERTICAL_CONFIGS["higher-ed"].illustrative).toBeUndefined();
+    for (const v of ["live-events", "broadcast"] as const) {
+      const ill = VERTICAL_CONFIGS[v].illustrative;
+      expect(ill, v).toBeTruthy();
+      expect(ill!.confidence).toBe("estimated");
+      // every illustrative figure must read as illustrative, never a quote
+      expect(ill!.unitNote.toLowerCase()).toContain("not a quote");
+      const blob = JSON.stringify(ill);
+      expect(blob).not.toMatch(FORBIDDEN);
     }
   });
 
@@ -56,6 +68,13 @@ describe("calculate() vertical behavior", () => {
     const r = calcWith({ vertical: "live-events" });
     expect(r.resultMode).toBe("fit");
     expect(r.retentionCost).toBe(0);
+  });
+
+  it("ex-retention totals equal the full totals when no revenue model applies", () => {
+    const r = calcWith({ vertical: "live-events" });
+    expect(r.annualCostExRetention).toBe(r.annualCost);
+    expect(r.threeYearCostExRetention).toBe(r.threeYearCost);
+    expect(r.retentionShareOfAnnual).toBe(0);
   });
 
   it("staff scaling comes from the vertical config", () => {

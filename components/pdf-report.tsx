@@ -47,7 +47,9 @@ const TEAL = "#0C3D34"; // teal-base — payback card
 const GREEN = "#83CE41"; // green-base — positive / ROI accent (use dark text on it)
 const WORDMARK = "#414042"; // Epiphan logo wordmark gray
 const GRAY = "#5a5a5a"; // ink-3
+const INK_BODY = "#333333"; // ink-2 — body text
 const LIGHT_GRAY = "#f1f2f0"; // surface-2
+const LINE = "#e4e5ea"; // line — hairlines / borders
 const WHITE = "#ffffff";
 
 // ── Styles ───────────────────────────────────────────────────────────
@@ -56,7 +58,7 @@ const s = StyleSheet.create({
     padding: 40,
     fontSize: 10,
     fontFamily: "Soehne",
-    color: "#333333",
+    color: INK_BODY,
   },
   // Header
   headerRow: {
@@ -95,12 +97,12 @@ const s = StyleSheet.create({
   // Table
   tableRow: {
     flexDirection: "row",
-    borderBottom: "1px solid #e0e0e0",
+    borderBottom: `1px solid ${LINE}`,
     paddingVertical: 4,
   },
   tableRowAlt: {
     flexDirection: "row",
-    borderBottom: "1px solid #e0e0e0",
+    borderBottom: `1px solid ${LINE}`,
     paddingVertical: 4,
     backgroundColor: LIGHT_GRAY,
   },
@@ -138,7 +140,7 @@ const s = StyleSheet.create({
   // Breakdown table
   breakdownRow: {
     flexDirection: "row",
-    borderBottom: "1px solid #e0e0e0",
+    borderBottom: `1px solid ${LINE}`,
     paddingVertical: 5,
   },
   breakdownName: {
@@ -204,7 +206,7 @@ const s = StyleSheet.create({
   // Advanced inputs
   advancedRow: {
     flexDirection: "row",
-    borderBottom: "1px solid #e0e0e0",
+    borderBottom: `1px solid ${LINE}`,
     paddingVertical: 3,
   },
   advancedLabel: {
@@ -226,7 +228,7 @@ const s = StyleSheet.create({
     bottom: 30,
     left: 40,
     right: 40,
-    borderTop: `1px solid #e0e0e0`,
+    borderTop: `1px solid ${LINE}`,
     paddingTop: 8,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -325,7 +327,7 @@ export function PdfReport({ inputs, results, generatedDate }: PdfReportProps) {
             { label: "Institutional Risk", start: 5, end: 7 },
           ].map((tier) => (
             <View key={tier.label}>
-              <View style={{ backgroundColor: "#e8eaed", paddingVertical: 3, paddingHorizontal: 6, marginTop: tier.start > 0 ? 6 : 0 }}>
+              <View style={{ backgroundColor: LINE, paddingVertical: 3, paddingHorizontal: 6, marginTop: tier.start > 0 ? 6 : 0 }}>
                 <Text style={{ fontSize: 8, fontFamily: "Soehne-Bold", color: NAVY, textTransform: "uppercase", letterSpacing: 0.5 }}>
                   {tier.label}
                 </Text>

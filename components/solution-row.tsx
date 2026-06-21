@@ -21,18 +21,18 @@ function ProductCard({
   callout: string;
 }) {
   return (
-    <div className="bg-white rounded-lg border-2 border-[#e0e0e0] p-4 flex flex-col">
+    <div className="bg-white rounded-lg border-2 border-line p-4 flex flex-col">
       <div className="flex items-baseline justify-between mb-2">
-        <h4 className="text-[15px] font-bold text-[#170F30]">{name}</h4>
-        <span className="text-[13px] font-bold text-[#0C3D34]">{price}</span>
+        <h4 className="text-[15px] font-bold text-ink">{name}</h4>
+        <span className="text-[13px] font-bold text-teal">{price}</span>
       </div>
-      <p className="text-[13px] text-[#424242] italic mb-3">{tagline}</p>
-      <ul className="text-[12px] text-[#5a5a5a] space-y-1 mb-3 flex-1">
+      <p className="text-[13px] text-ink-2 italic mb-3">{tagline}</p>
+      <ul className="text-[12px] text-ink-3 space-y-1 mb-3 flex-1">
         {capabilities.map((cap) => (
           <li key={cap}>&#8226; {cap}</li>
         ))}
       </ul>
-      <p className="text-[12px] font-semibold text-[#170F30] bg-[#D4F4C1] rounded px-2.5 py-1.5">
+      <p className="text-[12px] font-semibold text-ink bg-green-tint rounded px-2.5 py-1.5">
         {callout}
       </p>
     </div>
@@ -107,15 +107,15 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
   const visibleCards = PRODUCT_CARDS.filter((c) => mix[c.key] > 0);
 
   return (
-    <div className="bg-[#eef7e4] rounded-[10px] p-5 mt-5">
+    <div className="bg-aqua-tint rounded-[10px] p-5 mt-5">
       {/* Section A: Header */}
-      <h3 className="text-[16px] font-bold text-[#170F30] mb-4">
+      <h3 className="text-[16px] font-bold text-ink mb-4">
         &#9989; The Epiphan Path Forward
       </h3>
 
       {/* Section B: Room Mix Breakdown */}
       <div className="bg-white rounded-lg p-4 mb-4">
-        <h4 className="text-[14px] font-bold text-[#170F30] mb-3">
+        <h4 className="text-[14px] font-bold text-ink mb-3">
           Your {inputs.rooms.toLocaleString()}-Room Campus Mix
         </h4>
         <div className="space-y-1.5">
@@ -124,28 +124,28 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
               key={line.label}
               className="flex items-center justify-between text-[13px] px-2 py-1"
             >
-              <span className="text-[#424242]">
-                <span className="font-semibold text-[#170F30]">{line.count}</span>
+              <span className="text-ink-2">
+                <span className="font-semibold text-ink">{line.count}</span>
                 {" \u00D7 "}
                 {line.label}
-                <span className="text-[#5a5a5a] ml-1">
+                <span className="text-ink-3 ml-1">
                   ({formatCurrency(line.unitPrice)})
                 </span>
               </span>
-              <span className="font-bold text-[#170F30]">
+              <span className="font-bold text-ink">
                 {formatCurrency(line.count * line.unitPrice)}
               </span>
             </div>
           ))}
-          <div className="border-t border-[#e0e0e0] mt-2 pt-2 flex items-center justify-between px-2">
-            <span className="text-[13px] font-bold text-[#170F30]">
+          <div className="border-t border-line mt-2 pt-2 flex items-center justify-between px-2">
+            <span className="text-[13px] font-bold text-ink">
               Total Investment
             </span>
             <div className="text-right">
-              <span className="text-[15px] font-extrabold text-[#170F30]">
+              <span className="text-[15px] font-extrabold text-ink">
                 {formatCurrency(r.totalInvestment)}
               </span>
-              <span className="text-[12px] text-[#5a5a5a] ml-2">
+              <span className="text-[12px] text-ink-3 ml-2">
                 ({formatCurrency(r.blendedPerRoom)}/room avg)
               </span>
             </div>
@@ -157,24 +157,24 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           ramp. A camera in every room, no encoder, publishes straight to the
           CMS. Framed as a phase-1 / new-logo entry, not the cheapest total. */}
       {r.showEc20DirectPath && (
-      <div className="bg-white rounded-lg border-2 border-[#83CE41] p-4 mb-4">
-        <h4 className="text-[14px] font-bold text-[#170F30] mb-1.5">
+      <div className="bg-white rounded-lg border-2 border-green p-4 mb-4">
+        <h4 className="text-[14px] font-bold text-ink mb-1.5">
           Start simple: a camera in every room.
         </h4>
-        <p className="text-[13px] text-[#424242] mb-3">
+        <p className="text-[13px] text-ink-2 mb-3">
           Skip the encoder entirely. An EC20 PTZ camera in each room publishes straight to your
           CMS &ndash; no rack, no operator, the lowest-barrier way to cover every room.
         </p>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-[22px] font-extrabold text-[#170F30]">
+          <span className="text-[22px] font-extrabold text-ink">
             {formatCurrency(r.ec20DirectInvestment)}
           </span>
-          <span className="text-[12px] text-[#5a5a5a]">
+          <span className="text-[12px] text-ink-3">
             {r.ec20DirectUnits.toLocaleString()} EC20 cameras &middot; vs{" "}
             {formatCurrency(r.totalInvestment)} room-by-room
           </span>
         </div>
-        <p className="text-[11px] text-[#5a5a5a] italic mt-2">
+        <p className="text-[11px] text-ink-3 italic mt-2">
           A great phase-1 or first-deployment start &mdash; add encoders and switching as you grow.
         </p>
       </div>
@@ -184,27 +184,27 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           Soft tease only — no architecture, no quote. The AE owns fit & pricing.
           Hidden for deployments too small to benefit from a central pool. */}
       {r.showPooledPath && (
-      <div className="bg-white rounded-lg border-2 border-[#0C3D34] p-4 mb-4">
-        <h4 className="text-[14px] font-bold text-[#0C3D34] mb-1.5">
+      <div className="bg-white rounded-lg border-2 border-teal p-4 mb-4">
+        <h4 className="text-[14px] font-bold text-teal mb-1.5">
           Tighter budget? There may be a more affordable path.
         </h4>
-        <p className="text-[13px] text-[#424242] mb-3">
+        <p className="text-[13px] text-ink-2 mb-3">
           Not every room records at the same time. If only about{" "}
-          <span className="font-bold text-[#170F30]">{r.concurrentRooms.toLocaleString()}</span> of
+          <span className="font-bold text-ink">{r.concurrentRooms.toLocaleString()}</span> of
           your {inputs.rooms.toLocaleString()} rooms are ever live at once, you may not need an
           encoder in every room &ndash; a smaller, centrally managed pool can cover the whole
           campus.
         </p>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-[22px] font-extrabold text-[#0C3D34]">
+          <span className="text-[22px] font-extrabold text-teal">
             ~{formatCurrency(r.pooledInvestment)}
           </span>
-          <span className="text-[12px] text-[#5a5a5a]">
+          <span className="text-[12px] text-ink-3">
             starting point &middot; {r.pooledEncoders.toLocaleString()} {r.pooledModel} encoders &middot; vs{" "}
             {formatCurrency(r.totalInvestment)} room-by-room
           </span>
         </div>
-        <p className="text-[11px] text-[#5a5a5a] italic mt-2">
+        <p className="text-[11px] text-ink-3 italic mt-2">
           A starting point for the conversation, not a quote. An Epiphan account engineer scopes the
           right design with you.
         </p>
@@ -212,7 +212,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
           href={AE_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 mt-3 py-2 px-4 bg-[#0C3D34] text-white font-semibold text-[13px] rounded-lg hover:bg-[#0a322b] transition-colors"
+          className="inline-flex items-center gap-1.5 mt-3 py-2 px-4 bg-teal text-white font-semibold text-[13px] rounded-lg hover:bg-teal-deep transition-colors"
         >
           Talk to an Epiphan AE &rarr;
         </a>
@@ -227,17 +227,17 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
       </div>
 
       {/* Section D: Fleet Management */}
-      <div className="bg-white rounded-lg border-2 border-[#83CE41] p-4 mb-4">
+      <div className="bg-white rounded-lg border-2 border-green p-4 mb-4">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[14px] font-bold text-[#170F30]">
+          <span className="text-[14px] font-bold text-ink">
             Epiphan Edge: free cloud fleet management
           </span>
         </div>
-        <p className="text-[13px] text-[#5a5a5a] mb-2">
+        <p className="text-[13px] text-ink-3 mb-2">
           Monitor and control every device from one dashboard. No per-device
           fees. Included with every Pearl.
         </p>
-        <p className="text-[12px] text-[#5a5a5a] italic">
+        <p className="text-[12px] text-ink-3 italic">
           Edge Premium ($20/device/mo) available for scheduling &amp; remote
           production. Proven at scale: NC State (300+ rooms, 3 staff) &bull;
           NTNU (700 rooms, a highly automated deployment)
@@ -268,10 +268,10 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
             key={card.label}
             className="bg-white rounded-lg p-3.5 text-center"
           >
-            <div className="text-[22px] font-extrabold text-[#170F30]">
+            <div className="text-[22px] font-extrabold text-ink">
               {card.value}
             </div>
-            <div className="text-[10px] text-[#5a5a5a] uppercase tracking-wide mt-0.5">
+            <div className="text-[10px] text-ink-3 uppercase tracking-wide mt-0.5">
               {card.label}
             </div>
           </div>
@@ -279,7 +279,7 @@ export function SolutionRow({ inputs, results: r }: SolutionRowProps) {
       </div>
 
       {/* Section F: Proof points */}
-      <div className="text-[11px] text-[#5a5a5a] italic">
+      <div className="text-[11px] text-ink-3 italic">
         Reference deployments: NC State (300+ rooms, team of 3) &bull; UNLV
         (215 units, remote fleet mgmt) &bull; MTSU (428 rooms) &bull; NTNU (700
         rooms, 42K students, a highly automated deployment)

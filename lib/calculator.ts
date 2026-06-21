@@ -18,6 +18,7 @@ import {
   ADA_MINIMUM_COST,
   RETENTION_PCT_BY_AGE,
   THREE_YEAR_MULTIPLIER,
+  THREE_YEAR_FLAT_MULTIPLIER,
   getRoomMix,
   getInvestmentFromMix,
   getEc20DirectInvestment,
@@ -29,6 +30,7 @@ import {
   type Vertical,
   type Framing,
   type ResultMode,
+  type Confidence,
   getVerticalConfig,
 } from "./verticals";
 
@@ -56,12 +58,19 @@ export interface CategoryCost {
   name: string;
   cost: number;
   barColor: "red" | "amber" | "blue";
+  // How defensible this driver is — surfaced as a chip in the UI so the
+  // headline never launders a weak driver as solid. Sourced from the research.
+  confidence: Confidence;
 }
 
 export interface CalculatorResults {
   // Totals
   annualCost: number;
   threeYearCost: number;
+  // Conservative totals with the single-study retention layer (#7) removed.
+  annualCostExRetention: number;
+  threeYearCostExRetention: number;
+  retentionShareOfAnnual: number;
 
   // Per-category costs
   ticketCost: number;
@@ -122,7 +131,7 @@ export interface CalculatorResults {
   showEc20DirectPath: boolean;
 
   // Vertical context. resultMode "cost" → show full $ (Higher Ed / Community
-  // College); "fit" → show portfolio fit + discovery (Live Events / Corporate /
+  // Education); "fit" → show portfolio fit + discovery (Live Events /
   // Broadcast), where dollar drivers are not yet calibrated.
   vertical: Vertical;
   framing: Framing;
@@ -184,7 +193,19 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
 
   // Totals
   const annualCost = ticketCost + missedCaptureCost + downtimeCost + staffCost + maintenanceCost + adaCost + retentionCost;
-  const threeYearCost = annualCost * THREE_YEAR_MULTIPLIER;
+
+  // 3-year horizon: age-driven operational costs escalate (×3.15); ADA exposure
+  // and retention revenue-at-risk are flat annual figures (×3, no escalation).
+  const escalatingAnnual = ticketCost + missedCaptureCost + downtimeCost + staffCost + maintenanceCost;
+  const flatAnnual = adaCost + retentionCost;
+  const threeYearCost = escalatingAnnual * THREE_YEAR_MULTIPLIER + flatAnnual * THREE_YEAR_FLAT_MULTIPLIER;
+
+  // Conservative view: the cost of inaction with the single-study retention
+  // layer (#7) removed. Retention can be ~40%+ of the HE headline on a single
+  // study, so expose the ex-retention totals for a "lead with the floor" toggle.
+  const annualCostExRetention = annualCost - retentionCost;
+  const threeYearCostExRetention = threeYearCost - retentionCost * THREE_YEAR_FLAT_MULTIPLIER;
+  const retentionShareOfAnnual = annualCost > 0 ? retentionCost / annualCost : 0;
 
   // Hours reclaimed = ticket handling hours + config labor hours
   const hoursReclaimed = ticketHours + Math.round(rooms * configHoursPerRoom);
@@ -214,19 +235,27 @@ export function calculate(inputs: CalculatorInputs): CalculatorResults {
   // Tier 1: Operational (hard budget costs)
   // Tier 2: Productivity (measured losses)
   // Tier 3: Institutional Risk (compliance & retention)
+  // Confidence per driver (from docs/research/higher-ed-cost-model.md): the
+  // failure/downtime bottom-ups are conservative + benchmark-anchored
+  // (calibrated); retention rests on a single study (estimated); the rest carry
+  // internal-only multipliers (asserted). The UI chips these so the floor-led
+  // headline stays honest about which dollars are solid.
   const categories: CategoryCost[] = [
-    { name: "IT Staff Time Wasted", cost: ticketCost, barColor: "red" },
-    { name: "Manual Operation Burden", cost: staffCost, barColor: "amber" },
-    { name: "Configuration & Maintenance Labor", cost: maintenanceCost, barColor: "blue" },
-    { name: "Failed & Missed Captures", cost: missedCaptureCost, barColor: "red" },
-    { name: "Classroom Downtime", cost: downtimeCost, barColor: "amber" },
-    { name: "ADA / Accessibility Compliance Exposure", cost: adaCost, barColor: "red" },
-    { name: "Student Retention — At-Risk Revenue", cost: retentionCost, barColor: "blue" },
+    { name: "IT Staff Time Wasted", cost: ticketCost, barColor: "red", confidence: "asserted" },
+    { name: "Manual Operation Burden", cost: staffCost, barColor: "amber", confidence: "asserted" },
+    { name: "Configuration & Maintenance Labor", cost: maintenanceCost, barColor: "blue", confidence: "asserted" },
+    { name: "Failed & Missed Captures", cost: missedCaptureCost, barColor: "red", confidence: "calibrated" },
+    { name: "Classroom Downtime", cost: downtimeCost, barColor: "amber", confidence: "calibrated" },
+    { name: "ADA / Accessibility Compliance Exposure", cost: adaCost, barColor: "red", confidence: "asserted" },
+    { name: "Student Retention — At-Risk Revenue", cost: retentionCost, barColor: "blue", confidence: "estimated" },
   ];
 
   return {
     annualCost,
     threeYearCost,
+    annualCostExRetention,
+    threeYearCostExRetention,
+    retentionShareOfAnnual,
     ticketCost,
     missedCaptureCost,
     downtimeCost,
